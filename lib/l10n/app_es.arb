@@ -1,0 +1,25 @@
+{
+    "@@locale": "es",
+    "appTitle": "Meta Tiempo",
+    "homepageSelectCityRequest": "Por favor, Seleccione una ciudad",
+    "homepageLastUpdated" : "Actualizado: {date}",
+    "@homepageLastUpdated" : {
+        "description" : "Last time updated",
+        "placeholders": {
+            "date": {
+                "type": "DateTime",
+                "format": "jm"
+            }
+        }
+    },
+    "homepageLatitude" : "latitud: {latt}",
+    "@homepageLatitude" : {
+        "description" : "Geo localiztion number",
+        "placeholders": {
+            "latt": {
+            }
+        }
+    },
+    "selectCityFormCity" : "Ciudad",
+    "selectCityNotSupported": "Ciudad no soportada"
+}

@@ -1,0 +1,25 @@
+{
+    "@@locale": "pt",
+    "appTitle": "Meta Tempo",
+    "homepageSelectCityRequest": "Por favor, selecionar uma cidade",
+    "homepageLastUpdated" : "Atualizado: {date}",
+    "@homepageLastUpdated" : {
+        "description" : "Last time updated",
+        "placeholders": {
+            "date": {
+                "type": "DateTime",
+                "format": "jm"
+            }
+        }
+    },
+    "homepageLatitude" : "Latitude: {latt}",
+    "@homepageLatitude" : {
+        "description" : "Geo localiztion number",
+        "placeholders": {
+            "latt": {
+            }
+        }
+    },
+    "selectCityFormCity" : "Cidade",
+    "selectCityNotSupported": "Cidade não suportada"
+}
