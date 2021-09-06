@@ -24,27 +24,22 @@ class WeatherSuccess extends StatelessWidget {
             return _bloc.stream
                 .firstWhere((element) => element is WeatherLoadSuccess);
           },
-          child: Container(
-            child: ListView(
-              children: [
-                LocationTitle(weather: weather),
-                CurrentMainWeather(weather: weather),
-                Container(
-                  child: Center(
-                    child: Text(
-                        '${AppLocalizations.of(context).homepageLastUpdated(weather.time.toLocal())}'),
-                  ),
+          child: ListView(
+            children: [
+              LocationTitle(weather: weather),
+              CurrentMainWeather(weather: weather),
+              Center(
+                child: Text(AppLocalizations.of(context)
+                    .homepageLastUpdated(weather.time.toLocal())),
+              ),
+              Center(
+                child: Text(
+                  AppLocalizations.of(context)
+                      .homepageLatitude(weather.lattLong.latitude ?? 0),
+                  style: Theme.of(context).textTheme.headline4,
                 ),
-                Container(
-                  child: Center(
-                    child: Text(
-                      '${AppLocalizations.of(context).homepageLatitude(weather.lattLong.latitude ?? 0)}',
-                      style: Theme.of(context).textTheme.headline4,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ],
@@ -67,7 +62,7 @@ class LocationTitle extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.place),
+          const Icon(Icons.place),
           Text(
             weather.title,
             style: Theme.of(context).textTheme.headline6,
@@ -88,22 +83,20 @@ class CurrentMainWeather extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Image.asset(
-              'assets/${weather.consolidatedWeather[0].condition.abbr}.png'),
-          BlocBuilder<SettingsBloc, SettingsState>(
-            builder: (context, state) {
-              return Text(
-                '${(state.settings.tempUnitSystem == TempUnitSystem.celsius) ? weather.consolidatedWeather[0].temp.floor() : weather.consolidatedWeather[0].farenheitTemp}°',
-                style: Theme.of(context).textTheme.headline2,
-              );
-            },
-          )
-        ],
-      ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Image.asset(
+            'assets/${weather.consolidatedWeather[0].condition.abbr}.png'),
+        BlocBuilder<SettingsBloc, SettingsState>(
+          builder: (context, state) {
+            return Text(
+              '${(state.settings.tempUnitSystem == TempUnitSystem.celsius) ? weather.consolidatedWeather[0].temp.floor() : weather.consolidatedWeather[0].farenheitTemp}°',
+              style: Theme.of(context).textTheme.headline2,
+            );
+          },
+        )
+      ],
     );
   }
 }
