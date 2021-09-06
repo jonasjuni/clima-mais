@@ -66,15 +66,15 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
 
 extension WeatherXTemperature on ConsolidatedWeather {
   double get farenheitTemp {
-    return _convertToFahrenheit(this.temp);
+    return _convertToFahrenheit(temp);
   }
 
   double get farenheitMaxTemp {
-    return _convertToFahrenheit(this.maxTemp);
+    return _convertToFahrenheit(maxTemp);
   }
 
   double get farenheitMinTemp {
-    return _convertToFahrenheit(this.minTemp);
+    return _convertToFahrenheit(minTemp);
   }
 
   double _convertToFahrenheit(double celsius) {

@@ -8,23 +8,23 @@ abstract class SettingsEvent {
 class ThemeLightChanged extends SettingsEvent {
   final ThemeLight themeLight;
 
-  ThemeLightChanged(this.themeLight);
+  const ThemeLightChanged(this.themeLight);
 }
 
 class TempUnitChanged extends SettingsEvent {
   final TempUnitSystem tempUnitSystem;
 
-  TempUnitChanged(this.tempUnitSystem);
+  const TempUnitChanged(this.tempUnitSystem);
 }
 
 class DistanceSystemChanged extends SettingsEvent {
   final DistanceSystem distanceSystem;
 
-  DistanceSystemChanged(this.distanceSystem);
+  const DistanceSystemChanged(this.distanceSystem);
 }
 
 class LocaleChanged extends SettingsEvent {
   final Locale locale;
 
-  LocaleChanged(this.locale);
+  const LocaleChanged(this.locale);
 }

@@ -51,9 +51,10 @@ class LocaleSerialiser implements JsonConverter<Locale?, String> {
       return Locale.fromSubtags(languageCode: bcp47[0]);
     } else if (bcp47.length == 2) {
       return Locale.fromSubtags(languageCode: bcp47[0], countryCode: bcp47[1]);
-    } else
+    } else {
       return Locale.fromSubtags(
           languageCode: bcp47[0], scriptCode: bcp47[1], countryCode: bcp47[2]);
+    }
   }
 
   @override

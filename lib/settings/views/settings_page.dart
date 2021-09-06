@@ -4,11 +4,12 @@ import 'package:clima_mais/settings/bloc/settings_bloc.dart';
 import 'package:clima_mais/settings/settings.dart';
 
 class SettingsPageView extends StatelessWidget {
+  const SettingsPageView({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Settings'), // TODO localize
+        title: const Text('Settings'), // TODO localize
       ),
       body: SettinsScreen(),
     );

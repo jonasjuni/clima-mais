@@ -24,5 +24,5 @@ class SettingsInitial extends SettingsState {
 }
 
 class SettingsInProgress extends SettingsState {
-  SettingsInProgress(Settings settings) : super(settings);
+  const SettingsInProgress(Settings settings) : super(settings);
 }

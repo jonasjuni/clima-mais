@@ -30,8 +30,9 @@ class WeatherView extends StatelessWidget {
               onPressed: () async {
                 final city = await Navigator.push<String>(context,
                     MaterialPageRoute(builder: (context) => CitySelection()));
-                if (city != null)
+                if (city != null) {
                   context.read<WeatherBloc>().add(WeatherRequested(city: city));
+                }
               }),
           IconButton(
               icon: Icon(Icons.settings),
@@ -46,10 +47,11 @@ class WeatherView extends StatelessWidget {
       body: Center(
         child:
             BlocConsumer<WeatherBloc, WeatherState>(listener: (context, state) {
-          if (state is WeatherLoadSuccess)
+          if (state is WeatherLoadSuccess) {
             context
                 .read<ThemeBloc>()
                 .add(WeatherChanged(weather: state.weather));
+          }
         }, builder: (context, state) {
           if (state is WeatherInitial) {
             return WeatherEmpty();
