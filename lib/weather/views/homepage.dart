@@ -8,39 +8,43 @@ import 'package:clima_mais/weather/views/city_selection_view.dart';
 import 'package:clima_mais/weather/widgets/widgets.dart';
 
 class WeatherHomePage extends StatelessWidget {
+  const WeatherHomePage({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) =>
           WeatherBloc(weatherRepository: context.read<WeatherRepository>()),
-      child: WeatherView(),
+      child: const WeatherView(),
     );
   }
 }
 
 class WeatherView extends StatelessWidget {
+  const WeatherView({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Flutter Weather'),
+        title: const Text('Flutter Weather'),
         actions: [
           IconButton(
-              icon: Icon(Icons.search),
+              icon: const Icon(Icons.search),
               onPressed: () async {
-                final city = await Navigator.push<String>(context,
-                    MaterialPageRoute(builder: (context) => CitySelection()));
+                final city = await Navigator.push<String>(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const CitySelection()));
                 if (city != null) {
                   context.read<WeatherBloc>().add(WeatherRequested(city: city));
                 }
               }),
           IconButton(
-              icon: Icon(Icons.settings),
+              icon: const Icon(Icons.settings),
               onPressed: () async {
                 Navigator.push<String>(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => SettingsPageView()));
+                        builder: (context) => const SettingsPageView()));
               }),
         ],
       ),
@@ -54,10 +58,10 @@ class WeatherView extends StatelessWidget {
           }
         }, builder: (context, state) {
           if (state is WeatherInitial) {
-            return WeatherEmpty();
+            return const WeatherEmpty();
           }
           if (state is WeatherLoadInProgress) {
-            return WeatherLoading();
+            return const WeatherLoading();
           }
           if (state is WeatherLoadSuccess) {
             return WeatherSuccess(weather: state.weather);

@@ -11,16 +11,17 @@ class SettingsPageView extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Settings'), // TODO localize
       ),
-      body: SettinsScreen(),
+      body: const SettingsScreen(),
     );
   }
 }
 
-class SettinsScreen extends StatelessWidget {
+class SettingsScreen extends StatelessWidget {
+  const SettingsScreen({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return ListView(
-      children: [
+      children: const [
         ListTile(
           title: Text('Temperature units'), // TODO localize
         ),
@@ -47,14 +48,14 @@ class TempSettings extends StatelessWidget {
     return Column(
       children: [
         RadioListTile(
-            title: Text('Celsius'), //TODO localize
+            title: const Text('Celsius'), //TODO localize
             value: TempUnitSystem.celsius,
             groupValue: tempUnits,
             onChanged: (TempUnitSystem? value) => (value != null)
                 ? context.read<SettingsBloc>().add(TempUnitChanged(value))
                 : null),
         RadioListTile(
-            title: Text('Fahrenheit'), //TODO localize
+            title: const Text('Fahrenheit'), //TODO localize
             value: TempUnitSystem.fahrenheit,
             groupValue: tempUnits,
             onChanged: (TempUnitSystem? value) => (value != null)
@@ -77,21 +78,21 @@ class ThemeLightSettings extends StatelessWidget {
     return Column(
       children: [
         RadioListTile(
-            title: Text('Light'), //TODO localize
+            title: const Text('Light'), //TODO localize
             value: ThemeLight.light,
             groupValue: tempUnits,
             onChanged: (ThemeLight? value) => (value != null)
                 ? context.read<SettingsBloc>().add(ThemeLightChanged(value))
                 : null),
         RadioListTile(
-            title: Text('Dark'), //TODO localize
+            title: const Text('Dark'), //TODO localize
             value: ThemeLight.dartk,
             groupValue: tempUnits,
             onChanged: (ThemeLight? value) => (value != null)
                 ? context.read<SettingsBloc>().add(ThemeLightChanged(value))
                 : null),
         RadioListTile(
-            title: Text('System'), //TODO localize
+            title: const Text('System'), //TODO localize
             value: ThemeLight.system,
             groupValue: tempUnits,
             onChanged: (ThemeLight? value) => (value != null)

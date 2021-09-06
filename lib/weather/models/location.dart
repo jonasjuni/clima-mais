@@ -48,7 +48,7 @@ class Coordinates {
             longitude: double.tryParse(part[1]));
       }
     }
-    return Coordinates();
+    return const Coordinates();
   }
 
   String? toJson() => '${latitude ?? ''},${longitude ?? ''}';

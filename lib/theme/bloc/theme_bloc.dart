@@ -11,7 +11,7 @@ part 'theme_state.dart';
 class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
   static const defautColor = Color(0xFF2196F3);
 
-  ThemeBloc() : super(ThemeState(color: defautColor));
+  ThemeBloc() : super(const ThemeState(color: defautColor));
 
   @override
   Stream<ThemeState> mapEventToState(
