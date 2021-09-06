@@ -33,7 +33,7 @@ class ClimaMaisApp extends StatelessWidget {
                 ),
                 darkTheme: ThemeData.dark(),
                 title: 'Clima Mais',
-                home: WeatherHomePage(),
+                home: const WeatherHomePage(),
                 localizationsDelegates: AppLocalizations.localizationsDelegates,
                 supportedLocales: AppLocalizations.supportedLocales,
               );
