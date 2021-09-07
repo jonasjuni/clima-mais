@@ -11,7 +11,7 @@ class WeatherRequested extends WeatherEvent {
   const WeatherRequested({required this.city});
 }
 
-class WeatherRefreshRequested extends WeatherEvent {
+class WeatherRefreshed extends WeatherEvent {
   final String city;
-  const WeatherRefreshRequested({required this.city});
+  const WeatherRefreshed({required this.city});
 }

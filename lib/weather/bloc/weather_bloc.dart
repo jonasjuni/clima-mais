@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:developer';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
@@ -11,39 +10,39 @@ part 'weather_state.dart';
 
 class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
   final WeatherRepository weatherRepository;
-  WeatherBloc({required this.weatherRepository}) : super(WeatherInitial());
+  WeatherBloc({required this.weatherRepository}) : super(WeatherInitial()) {
+    on<WeatherRequested>(_onWeatherRequested);
+    on<WeatherRefreshed>(_onWeatherRefreshed);
+  }
 
-  @override
-  Stream<WeatherState> mapEventToState(
-    WeatherEvent event,
-  ) async* {
-    if (event is WeatherRequested) {
-      yield WeatherLoadInProgress();
-      try {
-        final consolidatedWeather =
-            await weatherRepository.getWeather(event.city);
+  // New bloc API
+  void _onWeatherRequested(
+      WeatherRequested event, Emitter<WeatherState> emit) async {
+    emit(WeatherLoadInProgress());
+    try {
+      final consolidatedWeather =
+          await weatherRepository.getWeather(event.city);
 
-        log(consolidatedWeather.consolidatedWeather[0].temp.toString());
-        yield WeatherLoadSuccess(consolidatedWeather);
-      } on Exception catch (e) {
-        yield WeatherLoadFailure(exception: e);
-      }
-    } else if (event is WeatherRefreshRequested) {
-      try {
-        final consolidatedWeather =
-            await weatherRepository.getWeather(event.city);
+      log(consolidatedWeather.consolidatedWeather[0].temp.toString());
+      emit(WeatherLoadSuccess(consolidatedWeather));
+    } on Exception catch (e) {
+      emit(WeatherLoadFailure(exception: e));
+    }
+  }
 
-        yield WeatherLoadSuccess(consolidatedWeather);
-      } on Exception catch (e) {
-        yield WeatherLoadFailure(exception: e);
-      }
-    } else {
-      throw Error();
+  void _onWeatherRefreshed(
+      WeatherRefreshed event, Emitter<WeatherState> emit) async {
+    try {
+      final consolidatedWeather =
+          await weatherRepository.getWeather(event.city);
+
+      emit(WeatherLoadSuccess(consolidatedWeather));
+    } on Exception catch (e) {
+      emit(WeatherLoadFailure(exception: e));
     }
   }
 
   //Hydrated bloc persistence
-
   @override
   WeatherState? fromJson(Map<String, dynamic> json) {
     try {

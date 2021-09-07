@@ -19,7 +19,7 @@ class WeatherSuccess extends StatelessWidget {
         RefreshIndicator(
           onRefresh: () {
             final _bloc = context.read<WeatherBloc>()
-              ..add(WeatherRefreshRequested(city: weather.title));
+              ..add(WeatherRefreshed(city: weather.title));
 
             return _bloc.stream
                 .firstWhere((element) => element is WeatherLoadSuccess);
