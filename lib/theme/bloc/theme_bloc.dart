@@ -25,17 +25,17 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
   ThemeState _mapWeatherConditionToThemeData(Weather weather) {
     return ThemeState(color: weather.consolidatedWeather[0].toColor);
   }
+// // Persistence
+//   @override
+//   ThemeState? fromJson(Map<String, dynamic> json) {
+//     final color = Color(json['color']);
+//     return ThemeState(color: color);
+//   }
 
-  @override
-  ThemeState? fromJson(Map<String, dynamic> json) {
-    final color = Color(json['color']);
-    return ThemeState(color: color);
-  }
-
-  @override
-  Map<String, dynamic>? toJson(ThemeState state) {
-    return {'color': state.color.value};
-  }
+//   @override
+//   Map<String, dynamic>? toJson(ThemeState state) {
+//     return {'color': state.color.value};
+//   }
 }
 
 extension WeatherCoditionXColor on ConsolidatedWeather {

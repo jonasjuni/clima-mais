@@ -40,7 +40,8 @@ dependencies:
     git: git@github.com:jonasjuni/meta_weather.git
     
 dev_dependencies:
-# new lints
+  build_runner: ^2.1.2
+  # new lints
   flutter_lints: ^1.0.4
   flutter_test:
     sdk: flutter

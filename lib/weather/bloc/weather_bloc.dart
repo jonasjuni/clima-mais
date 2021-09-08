@@ -42,25 +42,25 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
     }
   }
 
-  //Hydrated bloc persistence
-  @override
-  WeatherState? fromJson(Map<String, dynamic> json) {
-    try {
-      final weather = Weather.fromJson(json);
-      return WeatherLoadSuccess(weather);
-    } catch (_) {
-      return null;
-    }
-  }
+  // // Hydrated bloc persistence
+  // @override
+  // WeatherState? fromJson(Map<String, dynamic> json) {
+  //   try {
+  //     final weather = Weather.fromJson(json);
+  //     return WeatherLoadSuccess(weather);
+  //   } catch (_) {
+  //     return null;
+  //   }
+  // }
 
-  @override
-  Map<String, dynamic>? toJson(WeatherState state) {
-    if (state is WeatherLoadSuccess) {
-      return state.weather.toJson();
-    } else {
-      return null;
-    }
-  }
+  // @override
+  // Map<String, dynamic>? toJson(WeatherState state) {
+  //   if (state is WeatherLoadSuccess) {
+  //     return state.weather.toJson();
+  //   } else {
+  //     return null;
+  //   }
+  // }
 }
 
 extension WeatherXTemperature on ConsolidatedWeather {

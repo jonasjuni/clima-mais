@@ -41,11 +41,11 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     }
   }
 
-  // Persistence
-  @override
-  SettingsState? fromJson(Map<String, dynamic> json) =>
-      SettingsInProgress(Settings.fromJson(json));
+  // // Persistence
+  // @override
+  // SettingsState? fromJson(Map<String, dynamic> json) =>
+  //     SettingsInProgress(Settings.fromJson(json));
 
-  @override
-  Map<String, dynamic>? toJson(SettingsState state) => state.settings.toJson();
+  // @override
+  // Map<String, dynamic>? toJson(SettingsState state) => state.settings.toJson();
 }
