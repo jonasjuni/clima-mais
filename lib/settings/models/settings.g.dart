@@ -6,25 +6,28 @@ part of 'settings.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-Settings _$SettingsFromJson(Map<String, dynamic> json) {
-  return $checkedNew('Settings', json, () {
-    final val = Settings(
-      tempUnitSystem: $checkedConvert(json, 'temp_unit_system',
-          (v) => _$enumDecode(_$TempUnitSystemEnumMap, v)),
-      themeLight: $checkedConvert(
-          json, 'theme_light', (v) => _$enumDecode(_$ThemeLightEnumMap, v)),
-      distanceSystem: $checkedConvert(json, 'distance_system',
-          (v) => _$enumDecode(_$DistanceSystemEnumMap, v)),
-      locale: $checkedConvert(json, 'locale',
-          (v) => const LocaleSerialiser().fromJson(v as String)),
+Settings _$SettingsFromJson(Map<String, dynamic> json) => $checkedCreate(
+      'Settings',
+      json,
+      ($checkedConvert) {
+        final val = Settings(
+          tempUnitSystem: $checkedConvert('temp_unit_system',
+              (v) => _$enumDecode(_$TempUnitSystemEnumMap, v)),
+          themeLight: $checkedConvert(
+              'theme_light', (v) => _$enumDecode(_$ThemeLightEnumMap, v)),
+          distanceSystem: $checkedConvert('distance_system',
+              (v) => _$enumDecode(_$DistanceSystemEnumMap, v)),
+          locale: $checkedConvert(
+              'locale', (v) => const LocaleSerialiser().fromJson(v as String)),
+        );
+        return val;
+      },
+      fieldKeyMap: const {
+        'tempUnitSystem': 'temp_unit_system',
+        'themeLight': 'theme_light',
+        'distanceSystem': 'distance_system'
+      },
     );
-    return val;
-  }, fieldKeyMap: const {
-    'tempUnitSystem': 'temp_unit_system',
-    'themeLight': 'theme_light',
-    'distanceSystem': 'distance_system'
-  });
-}
 
 Map<String, dynamic> _$SettingsToJson(Settings instance) => <String, dynamic>{
       'temp_unit_system': _$TempUnitSystemEnumMap[instance.tempUnitSystem],

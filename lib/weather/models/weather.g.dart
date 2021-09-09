@@ -6,29 +6,31 @@ part of 'weather.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-Weather _$WeatherFromJson(Map<String, dynamic> json) {
-  return $checkedNew('Weather', json, () {
-    final val = Weather(
-      $checkedConvert(
-          json,
-          'weather_state_abbr',
-          (v) => _$enumDecode(_$WeatherConditionEnumMap, v,
-              unknownValue: WeatherCondition.unknown)),
-      $checkedConvert(json, 'weather_state_name', (v) => v as String),
-      $checkedConvert(json, 'min_temp', (v) => (v as num).toDouble()),
-      $checkedConvert(json, 'max_temp', (v) => (v as num).toDouble()),
-      $checkedConvert(json, 'the_temp', (v) => (v as num).toDouble()),
-      $checkedConvert(json, 'created', (v) => DateTime.parse(v as String)),
+Weather _$WeatherFromJson(Map<String, dynamic> json) => $checkedCreate(
+      'Weather',
+      json,
+      ($checkedConvert) {
+        final val = Weather(
+          $checkedConvert(
+              'weather_state_abbr',
+              (v) => _$enumDecode(_$WeatherConditionEnumMap, v,
+                  unknownValue: WeatherCondition.unknown)),
+          $checkedConvert('weather_state_name', (v) => v as String),
+          $checkedConvert('min_temp', (v) => (v as num).toDouble()),
+          $checkedConvert('max_temp', (v) => (v as num).toDouble()),
+          $checkedConvert('the_temp', (v) => (v as num).toDouble()),
+          $checkedConvert('created', (v) => DateTime.parse(v as String)),
+        );
+        return val;
+      },
+      fieldKeyMap: const {
+        'condition': 'weather_state_abbr',
+        'weatherStateName': 'weather_state_name',
+        'minTemp': 'min_temp',
+        'maxTemp': 'max_temp',
+        'temp': 'the_temp'
+      },
     );
-    return val;
-  }, fieldKeyMap: const {
-    'condition': 'weather_state_abbr',
-    'weatherStateName': 'weather_state_name',
-    'minTemp': 'min_temp',
-    'maxTemp': 'max_temp',
-    'temp': 'the_temp'
-  });
-}
 
 Map<String, dynamic> _$WeatherToJson(Weather instance) => <String, dynamic>{
       'weather_state_abbr': _$WeatherConditionEnumMap[instance.condition],

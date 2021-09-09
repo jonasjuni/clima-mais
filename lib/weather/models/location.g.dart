@@ -6,22 +6,25 @@ part of 'location.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-Location _$LocationFromJson(Map<String, dynamic> json) {
-  return $checkedNew('Location', json, () {
-    final val = Location(
-      $checkedConvert(json, 'title', (v) => v as String),
-      $checkedConvert(
-          json, 'location_type', (v) => _$enumDecode(_$LocationTypeEnumMap, v)),
-      $checkedConvert(json, 'woeid', (v) => v as int),
-      $checkedConvert(
-          json, 'latt_long', (v) => Coordinates.fromJson(v as String)),
+Location _$LocationFromJson(Map<String, dynamic> json) => $checkedCreate(
+      'Location',
+      json,
+      ($checkedConvert) {
+        final val = Location(
+          $checkedConvert('title', (v) => v as String),
+          $checkedConvert(
+              'location_type', (v) => _$enumDecode(_$LocationTypeEnumMap, v)),
+          $checkedConvert('woeid', (v) => v as int),
+          $checkedConvert(
+              'latt_long', (v) => Coordinates.fromJson(v as String)),
+        );
+        return val;
+      },
+      fieldKeyMap: const {
+        'locationType': 'location_type',
+        'lattLong': 'latt_long'
+      },
     );
-    return val;
-  }, fieldKeyMap: const {
-    'locationType': 'location_type',
-    'lattLong': 'latt_long'
-  });
-}
 
 Map<String, dynamic> _$LocationToJson(Location instance) => <String, dynamic>{
       'title': instance.title,
