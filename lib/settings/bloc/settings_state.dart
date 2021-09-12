@@ -10,16 +10,18 @@ abstract class SettingsState {
 class SettingsInitial extends SettingsState {
   const SettingsInitial()
       : super(const Settings(
+          isUserFirstAccess: true,
           tempUnitSystem: TempUnitSystem.celsius,
-          themeLight: ThemeLight.system,
           distanceSystem: DistanceSystem.metric,
+          userLocations: <UserLocation>[],
         ));
 
   const SettingsInitial.imperial()
       : super(const Settings(
+          isUserFirstAccess: true,
           tempUnitSystem: TempUnitSystem.fahrenheit,
-          themeLight: ThemeLight.system,
           distanceSystem: DistanceSystem.imperial,
+          userLocations: <UserLocation>[],
         ));
 }
 

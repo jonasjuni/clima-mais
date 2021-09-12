@@ -24,54 +24,86 @@ class WeatherView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Flutter Weather'),
-        actions: [
-          IconButton(
-              icon: const Icon(Icons.search),
-              onPressed: () async {
-                final city = await Navigator.push<String>(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const CitySelection()));
-                if (city != null) {
-                  context.read<WeatherBloc>().add(WeatherRequested(city: city));
-                }
-              }),
-          IconButton(
-              icon: const Icon(Icons.settings),
-              onPressed: () async {
-                Navigator.push<String>(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const SettingsPageView()));
-              }),
-        ],
-      ),
-      body: Center(
-        child:
-            BlocConsumer<WeatherBloc, WeatherState>(listener: (context, state) {
+      body: RefreshIndicator(
+        onRefresh: () {
+          final bloc = context.read<WeatherBloc>();
+          final state = bloc.state;
+
           if (state is WeatherLoadSuccess) {
-            context
-                .read<ThemeBloc>()
-                .add(WeatherChanged(weather: state.weather));
+            bloc.add(WeatherRequested(city: state.weather.title));
+          } else if (state is WeatherLoadFailure) {
+            bloc.add(WeatherRequested(city: state.requestedCity));
           }
-        }, builder: (context, state) {
-          if (state is WeatherInitial) {
-            return const WeatherEmpty();
-          }
-          if (state is WeatherLoadInProgress) {
-            return const WeatherLoading();
-          }
-          if (state is WeatherLoadSuccess) {
-            return WeatherSuccess(weather: state.weather);
-          }
-          if (state is WeatherLoadFailure) {
-            return WeatherFailure(exception: state.exception);
-          }
-          throw Error();
-        }),
+          return bloc.stream.firstWhere((element) =>
+              element is WeatherLoadSuccess || element is WeatherLoadFailure);
+        },
+        child: CustomScrollView(
+          slivers: [
+            SliverAppBar(
+              // backgroundColor: Colors.transparent,
+              actions: [
+                IconButton(
+                    icon: const Icon(Icons.search),
+                    onPressed: () async {
+                      final city = await Navigator.push<String>(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const CitySelection()));
+                      if (city != null) {
+                        context
+                            .read<WeatherBloc>()
+                            .add(WeatherRequested(city: city));
+                      }
+                    }),
+                IconButton(
+                    icon: const Icon(Icons.settings),
+                    onPressed: () async {
+                      Navigator.push<String>(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const SettingsPageView()));
+                    }),
+              ],
+            ),
+            const SliverList(
+              delegate: SliverChildListDelegate.fixed(
+                [
+                  BlocLogic(),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
+  }
+}
+
+class BlocLogic extends StatelessWidget {
+  const BlocLogic({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocConsumer<WeatherBloc, WeatherState>(listener: (context, state) {
+      if (state is WeatherLoadSuccess) {
+        context.read<ThemeBloc>().add(WeatherChanged(weather: state.weather));
+      }
+    }, builder: (context, state) {
+      if (state is WeatherInitial) {
+        return const WeatherEmpty();
+      }
+      if (state is WeatherLoadInProgress) {
+        return const WeatherLoading();
+      }
+      if (state is WeatherLoadSuccess) {
+        return WeatherSuccess(weather: state.weather);
+      }
+      if (state is WeatherLoadFailure) {
+        return WeatherFailure(exception: state.exception);
+      }
+      throw Error();
+    });
   }
 }

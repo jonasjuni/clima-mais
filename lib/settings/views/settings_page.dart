@@ -1,6 +1,6 @@
+import 'package:clima_mais/settings/bloc/settings_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:clima_mais/settings/bloc/settings_bloc.dart';
 import 'package:clima_mais/settings/settings.dart';
 
 class SettingsPageView extends StatelessWidget {
@@ -20,7 +20,7 @@ class SettingsScreen extends StatelessWidget {
   const SettingsScreen({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return ListView(
+    return Column(
       children: const [
         ListTile(
           title: Text('Temperature units'), // TODO localize
@@ -73,30 +73,36 @@ class ThemeLightSettings extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tempUnits = context
-        .select((SettingsBloc element) => element.state.settings.themeLight);
+    final tempUnits = context.select(
+        (SettingsBloc element) => element.state.settings.themeBrightness);
     return Column(
       children: [
-        RadioListTile(
+        RadioListTile<Brightness?>(
             title: const Text('Light'), //TODO localize
-            value: ThemeLight.light,
+            value: Brightness.light,
             groupValue: tempUnits,
-            onChanged: (ThemeLight? value) => (value != null)
-                ? context.read<SettingsBloc>().add(ThemeLightChanged(value))
+            onChanged: (Brightness? value) => (value != null)
+                ? context
+                    .read<SettingsBloc>()
+                    .add(ThemeBrightnessChanged(value))
                 : null),
-        RadioListTile(
+        RadioListTile<Brightness?>(
             title: const Text('Dark'), //TODO localize
-            value: ThemeLight.dartk,
+            value: Brightness.dark,
             groupValue: tempUnits,
-            onChanged: (ThemeLight? value) => (value != null)
-                ? context.read<SettingsBloc>().add(ThemeLightChanged(value))
+            onChanged: (Brightness? value) => (value != null)
+                ? context
+                    .read<SettingsBloc>()
+                    .add(ThemeBrightnessChanged(value))
                 : null),
-        RadioListTile(
+        RadioListTile<Brightness?>(
             title: const Text('System'), //TODO localize
-            value: ThemeLight.system,
+            value: null,
             groupValue: tempUnits,
-            onChanged: (ThemeLight? value) => (value != null)
-                ? context.read<SettingsBloc>().add(ThemeLightChanged(value))
+            onChanged: (Brightness? value) => value != null
+                ? context
+                    .read<SettingsBloc>()
+                    .add(ThemeBrightnessChanged(value))
                 : null),
       ],
     );

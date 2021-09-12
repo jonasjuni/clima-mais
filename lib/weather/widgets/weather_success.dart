@@ -13,33 +13,19 @@ class WeatherSuccess extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
+    return Column(
       children: [
-        _WeatherDynamicBackground(),
-        RefreshIndicator(
-          onRefresh: () {
-            final _bloc = context.read<WeatherBloc>()
-              ..add(WeatherRefreshed(city: weather.title));
-
-            return _bloc.stream
-                .firstWhere((element) => element is WeatherLoadSuccess);
-          },
-          child: ListView(
-            children: [
-              LocationTitle(weather: weather),
-              CurrentMainWeather(weather: weather),
-              Center(
-                child: Text(AppLocalizations.of(context)
-                    .homepageLastUpdated(weather.time.toLocal())),
-              ),
-              Center(
-                child: Text(
-                  AppLocalizations.of(context)
-                      .homepageLatitude(weather.lattLong.latitude ?? 0),
-                  style: Theme.of(context).textTheme.headline4,
-                ),
-              ),
-            ],
+        LocationTitle(weather: weather),
+        CurrentMainWeather(weather: weather),
+        Center(
+          child: Text(AppLocalizations.of(context)
+              .homepageLastUpdated(weather.time.toLocal())),
+        ),
+        Center(
+          child: Text(
+            AppLocalizations.of(context)
+                .homepageLatitude(weather.lattLong.latitude ?? 0),
+            style: Theme.of(context).textTheme.headline4,
           ),
         ),
       ],
