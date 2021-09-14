@@ -1,15 +1,9 @@
-import 'package:meta_weather/meta_weather.dart';
+import 'package:clima_mais/repositories/repositories.dart';
 
-class WeatherRepository {
-  final WeatherApiClient weatherApiClient;
+abstract class WeatherRepository {
+  Future<List<Location>> getLocationIdByName(String name);
+  Future<List<Location>> getLocationByCoordinates(Coordinates coordinates);
+  Future<Weather> getWeatherById(int id);
 
-  WeatherRepository({required this.weatherApiClient});
-
-  Future<Weather> getWeather(String city) async {
-    final location = await weatherApiClient.getLocatioId(city);
-
-    return location.isEmpty
-        ? throw Exception('City not supported')
-        : weatherApiClient.fetchWeather(location[0].woeid);
-  }
+  Future<Coordinates> getDeviceCoordinates();
 }

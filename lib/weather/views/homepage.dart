@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:clima_mais/repositories/repositories.dart';
-import 'package:clima_mais/settings/views/view.dart';
-import 'package:clima_mais/theme/bloc/theme_bloc.dart';
-import 'package:clima_mais/weather/bloc/weather_bloc.dart';
-import 'package:clima_mais/weather/views/city_selection_view.dart';
-import 'package:clima_mais/weather/widgets/widgets.dart';
+import 'package:clima_mais/settings/settings.dart';
+import 'package:clima_mais/weather/weather.dart';
 
 class WeatherHomePage extends StatelessWidget {
   const WeatherHomePage({Key? key}) : super(key: key);
@@ -86,24 +83,22 @@ class BlocLogic extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<WeatherBloc, WeatherState>(listener: (context, state) {
-      if (state is WeatherLoadSuccess) {
-        context.read<ThemeBloc>().add(WeatherChanged(weather: state.weather));
-      }
-    }, builder: (context, state) {
-      if (state is WeatherInitial) {
-        return const WeatherEmpty();
-      }
-      if (state is WeatherLoadInProgress) {
-        return const WeatherLoading();
-      }
-      if (state is WeatherLoadSuccess) {
-        return WeatherSuccess(weather: state.weather);
-      }
-      if (state is WeatherLoadFailure) {
-        return WeatherFailure(exception: state.exception);
-      }
-      throw Error();
-    });
+    return BlocConsumer<WeatherBloc, WeatherState>(
+        listener: (context, state) {},
+        builder: (context, state) {
+          if (state is WeatherInitial) {
+            return const WeatherEmpty();
+          }
+          if (state is WeatherLoadInProgress) {
+            return const WeatherLoading();
+          }
+          if (state is WeatherLoadSuccess) {
+            return WeatherSuccess(weather: state.weather);
+          }
+          if (state is WeatherLoadFailure) {
+            return WeatherFailure(exception: state.exception);
+          }
+          throw Error();
+        });
   }
 }

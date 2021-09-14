@@ -1,10 +1,7 @@
 import 'dart:developer';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-
 import 'package:clima_mais/repositories/repositories.dart';
-import 'package:meta_weather/meta_weather.dart';
-import 'package:geolocator/geolocator.dart';
 
 part 'weather_event.dart';
 part 'weather_state.dart';
@@ -20,66 +17,18 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
       WeatherRequested event, Emitter<WeatherState> emit) async {
     emit(WeatherLoadInProgress());
     try {
-      final consolidatedWeather =
-          await weatherRepository.getWeather(event.city);
+      final location = await weatherRepository.getLocationIdByName(event.city);
 
-      log(consolidatedWeather.consolidatedWeather[0].temp.toString());
-      emit(WeatherLoadSuccess(consolidatedWeather));
+      final weather = await weatherRepository.getWeatherById(location[0].woeid);
+
+      emit(WeatherLoadSuccess(weather));
     } on Exception catch (e) {
       emit(WeatherLoadFailure(exception: e, requestedCity: event.city));
     }
   }
-
-  void _updateCurrentLocalization() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      return Future.error('Location services are disabled.');
-    }
-
-    // Check permission
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return Future.error('Location permissions are denied');
-      }
-    }
-    if (permission == LocationPermission.deniedForever) {
-      // Permissions are denied forever, handle appropriately.
-      return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions.');
-    }
-
-    Position test = await Geolocator.getCurrentPosition();
-
-    log(test.toString());
-  }
-
-  // Hydrated bloc persistence
-  @override
-  WeatherState? fromJson(Map<String, dynamic> json) {
-    try {
-      final weather = Weather.fromJson(json);
-      return WeatherLoadSuccess(weather);
-    } catch (_) {
-      return null;
-    }
-  }
-
-  @override
-  Map<String, dynamic>? toJson(WeatherState state) {
-    if (state is WeatherLoadSuccess) {
-      return state.weather.toJson();
-    } else {
-      return null;
-    }
-  }
 }
 
-extension WeatherXTemperature on ConsolidatedWeather {
+extension WeatherXTemperature on WeatherForecast {
   double get farenheitTemp {
     return _convertToFahrenheit(temp);
   }

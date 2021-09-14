@@ -6,7 +6,7 @@ import 'package:meta_weather/meta_weather.dart';
 
 void main() {
   final httpClient = http.Client();
-  final weatherRepository = WeatherRepository(
+  final weatherRepository = MetaWeatherRepository(
     weatherApiClient: WeatherApiClient(
       httpClient: httpClient,
     ),
