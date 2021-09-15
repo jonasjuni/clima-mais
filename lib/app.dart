@@ -8,7 +8,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ClimaMaisApp extends StatelessWidget {
   final WeatherRepository weatherRepository;
-
   const ClimaMaisApp({Key? key, required this.weatherRepository})
       : super(key: key);
   @override

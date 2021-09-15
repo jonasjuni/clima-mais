@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:clima_mais/repositories/repositories.dart';
-import 'package:clima_mais/settings/settings.dart';
 import 'package:clima_mais/weather/weather.dart';
+import 'package:clima_mais/settings/settings.dart';
+import 'package:clima_mais/location_search/location_search.dart';
 
 class WeatherHomePage extends StatelessWidget {
   const WeatherHomePage({Key? key}) : super(key: key);
@@ -27,9 +28,9 @@ class WeatherView extends StatelessWidget {
           final state = bloc.state;
 
           if (state is WeatherLoadSuccess) {
-            bloc.add(WeatherRequested(city: state.weather.title));
+            bloc.add(WeatherRequested(id: state.weather.woeid));
           } else if (state is WeatherLoadFailure) {
-            bloc.add(WeatherRequested(city: state.requestedCity));
+            bloc.add(WeatherRequested(id: state.id));
           }
           return bloc.stream.firstWhere((element) =>
               element is WeatherLoadSuccess || element is WeatherLoadFailure);
@@ -42,15 +43,11 @@ class WeatherView extends StatelessWidget {
                 IconButton(
                     icon: const Icon(Icons.search),
                     onPressed: () async {
-                      final city = await Navigator.push<String>(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const CitySelection()));
-                      if (city != null) {
-                        context
-                            .read<WeatherBloc>()
-                            .add(WeatherRequested(city: city));
-                      }
+                      await Navigator.push<String>(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const LocationSearchPage()),
+                      );
                     }),
                 IconButton(
                     icon: const Icon(Icons.settings),
@@ -58,7 +55,7 @@ class WeatherView extends StatelessWidget {
                       Navigator.push<String>(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const SettingsPageView()));
+                              builder: (context) => const SettingsPage()));
                     }),
               ],
             ),

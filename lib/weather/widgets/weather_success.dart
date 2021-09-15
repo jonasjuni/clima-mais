@@ -71,7 +71,7 @@ class CurrentMainWeather extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Image.asset('assets/${weather.weatherForecasts[0].condition}.png'),
+        Image.asset('assets/${weather.weatherForecasts[0].abbr}.png'),
         BlocBuilder<SettingsBloc, SettingsState>(
           builder: (context, state) {
             final String temp = state.settings.tempUnitSystem ==

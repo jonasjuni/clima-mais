@@ -15,15 +15,13 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
   // New bloc API
   void _onWeatherRequested(
       WeatherRequested event, Emitter<WeatherState> emit) async {
-    emit(WeatherLoadInProgress());
+    emit(const WeatherLoadInProgress());
     try {
-      final location = await weatherRepository.getLocationIdByName(event.city);
-
-      final weather = await weatherRepository.getWeatherById(location[0].woeid);
+      final weather = await weatherRepository.getWeatherById(event.id);
 
       emit(WeatherLoadSuccess(weather));
     } on Exception catch (e) {
-      emit(WeatherLoadFailure(exception: e, requestedCity: event.city));
+      emit(WeatherLoadFailure(exception: e, id: event.id));
     }
   }
 }

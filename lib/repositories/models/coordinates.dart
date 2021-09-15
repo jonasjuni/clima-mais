@@ -3,4 +3,9 @@ class Coordinates {
 
   final double latitude;
   final double longitude;
+
+  @override
+  String toString() {
+    return 'Latitude: $latitude, Longitude: $longitude';
+  }
 }

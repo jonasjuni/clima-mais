@@ -72,18 +72,56 @@ extension MetaWeatherLocationXLocation on meta_weather.Location {
 
 extension ConsolidatedWeatherdWeatherXWeatherForecast
     on meta_weather.ConsolidatedWeather {
-  WeatherForecast toWeatherForecast() => WeatherForecast(
-        WeatherCondition.clear,
-        weatherStateName,
-        minTemp,
-        maxTemp,
-        temp,
-        0,
-        0,
-        0,
-        0,
-        created,
-      );
+  WeatherForecast toWeatherForecast() {
+    final WeatherCondition weatherCondition;
+    switch (condition) {
+      case meta_weather.WeatherCondition.snow:
+        weatherCondition = WeatherCondition.snow;
+        break;
+      case meta_weather.WeatherCondition.sleet:
+        weatherCondition = WeatherCondition.sleet;
+        break;
+      case meta_weather.WeatherCondition.hail:
+        weatherCondition = WeatherCondition.hail;
+        break;
+      case meta_weather.WeatherCondition.thunderstorm:
+        weatherCondition = WeatherCondition.thunderstorm;
+        break;
+      case meta_weather.WeatherCondition.heavyRain:
+        weatherCondition = WeatherCondition.heavyRain;
+        break;
+      case meta_weather.WeatherCondition.lightRain:
+        weatherCondition = WeatherCondition.lightRain;
+        break;
+      case meta_weather.WeatherCondition.showers:
+        weatherCondition = WeatherCondition.showers;
+        break;
+      case meta_weather.WeatherCondition.heavyCloud:
+        weatherCondition = WeatherCondition.heavyCloud;
+        break;
+      case meta_weather.WeatherCondition.lightCloud:
+        weatherCondition = WeatherCondition.lightCloud;
+        break;
+      case meta_weather.WeatherCondition.clear:
+        weatherCondition = WeatherCondition.clear;
+        break;
+      case meta_weather.WeatherCondition.unknown:
+        weatherCondition = WeatherCondition.unknown;
+        break;
+    }
+
+    return WeatherForecast(
+        condition: weatherCondition,
+        weatherStateName: weatherStateName,
+        minTemp: minTemp,
+        maxTemp: maxTemp,
+        temp: temp,
+        humidity: 0,
+        airPressure: 0,
+        windSpeed: 0,
+        windDirection: 0,
+        created: created);
+  }
 }
 
 extension MetaWeatherXWeather on meta_weather.Weather {
