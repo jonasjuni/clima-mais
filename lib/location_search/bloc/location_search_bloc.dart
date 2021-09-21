@@ -10,35 +10,87 @@ part 'location_search_state.dart';
 
 class LocationSearchBloc
     extends Bloc<LocationSearchEvent, LocationSearchState> {
-  LocationSearchBloc({required WeatherRepository weatherRepository})
-      : _weatherRepository = weatherRepository,
+  final WeatherRepository _weatherRepository;
+
+  LocationSearchBloc({
+    required WeatherRepository weatherRepository,
+  })  : _weatherRepository = weatherRepository,
         super(LocationSearchInitial()) {
     on<LocationSearchQueryChanged>(_onLocationSearchQueryChanged);
-    on<SearchLocationByNameRequested>(_onDeviceLocationRequested);
-    on<DeviceLocationRequested>(_onSearchLocationByNameRequested);
+    on<LocationSearchByNameRequested>(_onSearchLocationByNameRequested);
+    on<LocationSearchByCoordinatesRequested>(
+        _onSearchLocationByCoordiantesRequested);
   }
-
-  final WeatherRepository _weatherRepository;
 
   void _onLocationSearchQueryChanged(LocationSearchQueryChanged event,
       Emitter<LocationSearchState> emit) async {
-    emit(LocationSearchInProgess());
-    log(event.cityName ?? '');
+    final query = event.query;
+
+    if (query.isEmpty) {
+      emit(const LocationFetchSuccess(locations: []));
+    } else {
+      emit(const LocationFetchInProgess());
+      final userLocations = event.userLocations;
+
+      //First search on user saved location and physical location
+      final filtered =
+          userLocations.where((element) => element.title.startsWith(query));
+      if (filtered.isEmpty) {
+        try {
+          // final locations = await _weatherRepository.getLocationIdByName(value);
+          await Future.delayed(const Duration(seconds: 5));
+          const locations = [
+            Location('test', 1, Coordinates(123, 123), LocationType.fetched),
+            Location('test 2', 3, Coordinates(123, 123), LocationType.fetched),
+            Location('test 4', 5, Coordinates(123, 123), LocationType.fetched),
+          ];
+
+          emit(const LocationFetchSuccess(locations: locations));
+        } on Exception catch (e) {
+          emit(LocationFetchFail(e: e));
+        }
+      } else {
+        emit(LocationFetchSuccess(locations: filtered.toList()));
+      }
+    }
+
+    log(query);
   }
 
-  void _onDeviceLocationRequested(SearchLocationByNameRequested event,
+  void _onSearchLocationByNameRequested(LocationSearchByNameRequested event,
       Emitter<LocationSearchState> emit) async {
-    log(event.cityName);
+    log(event.query);
   }
 
-  void _onSearchLocationByNameRequested(
-      DeviceLocationRequested event, Emitter<LocationSearchState> emit) async {
+  void _onSearchLocationByCoordiantesRequested(
+      LocationSearchByCoordinatesRequested event,
+      Emitter<LocationSearchState> emit) async {
+    emit(const LocationFetchInProgess());
     try {
-      emit(LocationSearchInProgess());
       final coordinates = await _weatherRepository.getDeviceCoordinates();
-      log(coordinates.toString());
+      final locations =
+          await _weatherRepository.getLocationByCoordinates(coordinates);
+      if (locations.isEmpty) {
+        //Todo: throw exception
+        log('Location empty');
+        return;
+      }
+      //Search for physical location
+      final index = event.userLocations.indexWhere(
+          (element) => element.locationType == LocationType.physical);
+      List<Location> userLocations;
+      if (index.isNegative) {
+        userLocations = event.userLocations.toList()..insert(0, locations[0]);
+      } else {
+        userLocations = event.userLocations.toList()
+          ..removeAt(index)
+          ..insert(index, locations[0]);
+      }
+      emit(
+        LocationAddSuccess(locations: userLocations),
+      );
     } on Exception catch (e) {
-      emit(LocationSearchFail(exception: e, query: 'Device location'));
+      emit(LocationFetchFail(e: e));
     }
   }
 }

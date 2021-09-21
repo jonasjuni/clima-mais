@@ -5,95 +5,88 @@ import 'package:clima_mais/location_search/location_search.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 
-// class CitySelection extends StatefulWidget {
-//   const CitySelection({Key? key}) : super(key: key);
-//   @override
-//   _CitySelectionState createState() => _CitySelectionState();
-// }
-
-// class _CitySelectionState extends State<CitySelection> {
-//   final _textController = TextEditingController();
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text(AppLocalizations.of(context).selectCityFormCity),
-//       ),
-//       body: Column(
-//         children: [
-//           Form(
-//             child: Padding(
-//               padding: const EdgeInsets.fromLTRB(10, 5, 10, 0),
-//               child: TextFormField(
-//                 textInputAction: TextInputAction.search,
-//                 controller: _textController,
-//                 onFieldSubmitted: (name) => Navigator.pop(context, name.trim()),
-//                 autofillHints: const [AutofillHints.addressCity],
-//                 autofocus: true,
-//                 decoration: InputDecoration(
-//                   labelText: AppLocalizations.of(context).selectCityFormCity,
-//                   hintText: 'São Paulo', //TODO: l10n
-//                   suffixIcon: IconButton(
-//                       icon: const Icon(Icons.search),
-//                       onPressed: () =>
-//                           Navigator.pop(context, _textController.text.trim())),
-//                 ),
-//               ),
-//             ),
-//           ),
-//           OutlinedButton(
-//               onPressed: () =>
-//                   context.read<WeatherBloc>().add(DeviceLocationRequested()),
-//               child: const Text('Use my location')),
-//         ],
-//       ),
-//     );
-//   }
-// }
-
 class LocationSearchPage extends StatelessWidget {
-  const LocationSearchPage({Key? key}) : super(key: key);
+  const LocationSearchPage({Key? key, required this.userLocations})
+      : super(key: key);
+
+  final List<Location> userLocations;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => LocationSearchBloc(
-          weatherRepository: context.read<WeatherRepository>()),
-      child: const SearchBar(),
+        weatherRepository: context.read<WeatherRepository>(),
+      ),
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        body: BlocConsumer<LocationSearchBloc, LocationSearchState>(
+          listenWhen: (previous, current) =>
+              current is LocationAddSuccess || current is LocationFetchFail,
+          listener: (context, state) {
+            if (state is LocationAddSuccess) {
+              Navigator.pop<List<Location>>(context, state.locations);
+            }
+          },
+          builder: (context, state) {
+            final isLoading = state is LocationFetchInProgess;
+            return FloatingSearchBar(
+                //Todo: create my own search widget
+                clearQueryOnClose: false,
+                progress: isLoading,
+                hint: 'Search available cities', //TODO: l10n
+                isScrollControlled: true,
+                builder: (context, _) {
+                  if (state is LocationFetchSuccess) {
+                    return Container(
+                      color: Theme.of(context).colorScheme.surface,
+                      child: Column(
+                        children: state.locations
+                            .map((e) =>
+                                LocationItem(title: e.title, id: e.woeid))
+                            .toList(),
+                      ),
+                    );
+                  }
+                  return Container();
+                },
+                onSubmitted: (value) => context.read<LocationSearchBloc>().add(
+                    LocationSearchByNameRequested(
+                        query: value, userLocations: userLocations)),
+                onQueryChanged: (value) => context
+                    .read<LocationSearchBloc>()
+                    .add(LocationSearchQueryChanged(
+                        query: value, userLocations: userLocations)),
+                body: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    OutlinedButton(
+                      onPressed: isLoading
+                          ? null
+                          : () => context.read<LocationSearchBloc>().add(
+                              LocationSearchByCoordinatesRequested(
+                                  userLocations: userLocations)),
+                      child: const Text('Use you location'), //TODO: l10n
+                    ),
+                  ],
+                ));
+          },
+        ),
+      ),
     );
   }
 }
 
-class SearchBar extends StatelessWidget {
-  const SearchBar({Key? key}) : super(key: key);
+class LocationItem extends StatelessWidget {
+  final String title;
+  final int id;
+
+  const LocationItem({Key? key, required this.title, required this.id})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: FloatingSearchBar(
-        isScrollControlled: true,
-        builder: (context, animation) => Container(
-          height: 600,
-          color: Colors.lightGreen,
-        ),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            OutlinedButton(
-                onPressed: () => context
-                    .read<LocationSearchBloc>()
-                    .add(const DeviceLocationRequested()),
-                child: const Text('Use you location'))
-          ],
-        ),
-        onSubmitted: (value) => context
-            .read<LocationSearchBloc>()
-            .add(SearchLocationByNameRequested(value)),
-        onQueryChanged: (value) => context
-            .read<LocationSearchBloc>()
-            .add(LocationSearchQueryChanged(value)),
-      ),
+    return ListTile(
+      title: Text(title),
     );
   }
 }

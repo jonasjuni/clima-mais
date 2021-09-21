@@ -6,6 +6,11 @@ abstract class WeatherEvent {
 }
 
 class WeatherRequested extends WeatherEvent {
-  final int id;
-  const WeatherRequested({required this.id});
+  final List<Location> locations;
+  const WeatherRequested({required this.locations});
+}
+
+class WeatherRefreshed extends WeatherEvent {
+  final List<Location> locations;
+  const WeatherRefreshed({required this.locations});
 }

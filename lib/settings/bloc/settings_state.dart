@@ -11,17 +11,19 @@ class SettingsInitial extends SettingsState {
   const SettingsInitial()
       : super(const Settings(
           isUserFirstAccess: true,
+          isPhysicalLocationEmpty: true,
           tempUnitSystem: TempUnitSystem.celsius,
           distanceSystem: DistanceSystem.metric,
-          userLocations: <UserLocation>[],
+          userLocations: <Location>[],
         ));
 
   const SettingsInitial.imperial()
       : super(const Settings(
           isUserFirstAccess: true,
+          isPhysicalLocationEmpty: true,
           tempUnitSystem: TempUnitSystem.fahrenheit,
           distanceSystem: DistanceSystem.imperial,
-          userLocations: <UserLocation>[],
+          userLocations: <Location>[],
         ));
 }
 

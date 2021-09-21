@@ -5,17 +5,22 @@ abstract class LocationSearchEvent {
   const LocationSearchEvent();
 }
 
-class DeviceLocationRequested extends LocationSearchEvent {
-  const DeviceLocationRequested();
+class LocationSearchByNameRequested extends LocationSearchEvent {
+  final String query;
+  final List<Location> userLocations;
+
+  const LocationSearchByNameRequested(
+      {required this.query, required this.userLocations});
 }
 
-class SearchLocationByNameRequested extends LocationSearchEvent {
-  final String cityName;
-
-  const SearchLocationByNameRequested(this.cityName);
+class LocationSearchByCoordinatesRequested extends LocationSearchEvent {
+  final List<Location> userLocations;
+  const LocationSearchByCoordinatesRequested({required this.userLocations});
 }
 
 class LocationSearchQueryChanged extends LocationSearchEvent {
-  final String? cityName;
-  const LocationSearchQueryChanged(this.cityName);
+  final String query;
+  final List<Location> userLocations;
+  const LocationSearchQueryChanged(
+      {required this.query, required this.userLocations});
 }

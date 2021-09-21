@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:ui';
 import 'dart:developer';
 import 'package:bloc/bloc.dart';
+import 'package:clima_mais/repositories/repositories.dart';
 import 'package:meta/meta.dart';
 import 'package:clima_mais/settings/models/models.dart';
 
@@ -9,7 +10,10 @@ part 'settings_event.dart';
 part 'settings_state.dart';
 
 class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
-  SettingsBloc() : super(_metric);
+  SettingsBloc({required WeatherRepository weatherRepository})
+      : _weatherRepository = weatherRepository,
+        super(_metric);
+  final WeatherRepository _weatherRepository;
   static const _imperialsLocations = [
     'en-US',
     'en_BS',
@@ -40,12 +44,4 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
       yield SettingsInProgress(state.settings.copyWith(locale: event.locale));
     }
   }
-
-  // // Persistence
-  // @override
-  // SettingsState? fromJson(Map<String, dynamic> json) =>
-  //     SettingsInProgress(Settings.fromJson(json));
-
-  // @override
-  // Map<String, dynamic>? toJson(SettingsState state) => state.settings.toJson();
 }

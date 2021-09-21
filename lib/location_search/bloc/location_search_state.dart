@@ -1,17 +1,29 @@
 part of 'location_search_bloc.dart';
 
 @immutable
-abstract class LocationSearchState {}
+abstract class LocationSearchState {
+  const LocationSearchState();
+}
 
 class LocationSearchInitial extends LocationSearchState {}
 
-class LocationSearchInProgess extends LocationSearchState {}
+class LocationFetchInProgess extends LocationSearchState {
+  const LocationFetchInProgess();
+}
 
-class LocationSearchSuccess extends LocationSearchState {}
+class LocationFetchSuccess extends LocationSearchState {
+  final List<Location> locations;
+  const LocationFetchSuccess({required this.locations});
+}
 
-class LocationSearchFail extends LocationSearchState {
-  final Exception exception;
-  final String query;
+class LocationAddSuccess extends LocationSearchState {
+  final List<Location> locations;
+  const LocationAddSuccess({required this.locations});
+}
 
-  LocationSearchFail({required this.exception, required this.query});
+class LocationFetchFail extends LocationSearchState {
+  final Exception e;
+  const LocationFetchFail({
+    required this.e,
+  });
 }

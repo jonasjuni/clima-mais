@@ -15,7 +15,8 @@ class ClimaMaisApp extends StatelessWidget {
     return RepositoryProvider.value(
       value: weatherRepository,
       child: BlocProvider(
-          create: (_) => SettingsBloc(), child: const ClimaMaisMaterial()),
+          create: (_) => SettingsBloc(weatherRepository: weatherRepository),
+          child: const ClimaMaisMaterial()),
     );
   }
 }

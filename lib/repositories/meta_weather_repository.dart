@@ -39,14 +39,17 @@ class MetaWeatherRepository implements WeatherRepository {
   }
 
   @override
-  Future<List<Location>> getLocationByCoordinates(Coordinates coordinates) {
-    // TODO: implement getLocationByCoordinates
-    throw UnimplementedError();
+  Future<List<Location>> getLocationByCoordinates(
+      Coordinates coordinates) async {
+    return (await _weatherApiClient.getLocatioByLattLong(
+            lattitude: coordinates.latitude, longitude: coordinates.longitude))
+        .map((e) => e.toPhysicalLocation())
+        .toList();
   }
 
   @override
   Future<List<Location>> getLocationIdByName(String name) async {
-    return (await _weatherApiClient.getLocatioId(name))
+    return (await _weatherApiClient.getLocatioByQuery(name))
         .map((e) => e.toLocation())
         .toList();
   }
@@ -57,7 +60,7 @@ class MetaWeatherRepository implements WeatherRepository {
   }
 }
 
-//Use local models
+//Convert to local models
 extension GeolocationPositionXCoordinates on Position {
   Coordinates toCoordinates() => Coordinates(latitude, longitude);
 }
@@ -67,7 +70,10 @@ extension MetaWeatherCoordinatesXCoordinates on meta_weather.Coordinates {
 }
 
 extension MetaWeatherLocationXLocation on meta_weather.Location {
-  Location toLocation() => Location(title, woeid, lattLong.toCoordinates());
+  Location toLocation() =>
+      Location(title, woeid, lattLong.toCoordinates(), LocationType.fetched);
+  Location toPhysicalLocation() =>
+      Location(title, woeid, lattLong.toCoordinates(), LocationType.physical);
 }
 
 extension ConsolidatedWeatherdWeatherXWeatherForecast

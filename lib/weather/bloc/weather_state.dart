@@ -5,21 +5,22 @@ abstract class WeatherState {
   const WeatherState();
 }
 
-class WeatherInitial extends WeatherState {}
+class WeatherInitial extends WeatherState {
+  const WeatherInitial();
+}
 
 class WeatherLoadInProgress extends WeatherState {
-  final String? cityName;
-  const WeatherLoadInProgress({this.cityName});
+  const WeatherLoadInProgress();
 }
 
 class WeatherLoadSuccess extends WeatherState {
   final Weather weather;
-  const WeatherLoadSuccess(this.weather);
+  final List<Location> locations;
+  const WeatherLoadSuccess({required this.weather, required this.locations});
 }
 
 class WeatherLoadFailure extends WeatherState {
-  final int id;
   final Exception exception;
-
-  const WeatherLoadFailure({required this.exception, required this.id});
+  final List<Location> locations;
+  const WeatherLoadFailure({required this.exception, required this.locations});
 }

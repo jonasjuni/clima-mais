@@ -8,20 +8,37 @@ part 'weather_state.dart';
 
 class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
   final WeatherRepository weatherRepository;
-  WeatherBloc({required this.weatherRepository}) : super(WeatherInitial()) {
+  WeatherBloc({required this.weatherRepository})
+      : super(const WeatherInitial()) {
+    // New bloc API
     on<WeatherRequested>(_onWeatherRequested);
+    on<WeatherRefreshed>(_onWeatherRefreshed);
   }
 
-  // New bloc API
   void _onWeatherRequested(
       WeatherRequested event, Emitter<WeatherState> emit) async {
     emit(const WeatherLoadInProgress());
+    final locations = event.locations;
     try {
-      final weather = await weatherRepository.getWeatherById(event.id);
+      final id = locations[0].woeid;
+      final weather = await weatherRepository.getWeatherById(id);
 
-      emit(WeatherLoadSuccess(weather));
+      emit(WeatherLoadSuccess(weather: weather, locations: locations));
     } on Exception catch (e) {
-      emit(WeatherLoadFailure(exception: e, id: event.id));
+      emit(WeatherLoadFailure(exception: e, locations: locations));
+    }
+  }
+
+  void _onWeatherRefreshed(
+      WeatherRefreshed event, Emitter<WeatherState> emit) async {
+    final locations = event.locations;
+    try {
+      final id = locations[0].woeid;
+      final weather = await weatherRepository.getWeatherById(id);
+
+      emit(WeatherLoadSuccess(weather: weather, locations: locations));
+    } on Exception catch (e) {
+      emit(WeatherLoadFailure(exception: e, locations: locations));
     }
   }
 }

@@ -15,6 +15,10 @@ class TempUnitChanged extends SettingsEvent {
   const TempUnitChanged(this.tempUnitSystem);
 }
 
+class DeviceLocationRequested extends SettingsEvent {
+  const DeviceLocationRequested();
+}
+
 class DistanceSystemChanged extends SettingsEvent {
   final DistanceSystem distanceSystem;
   const DistanceSystemChanged(this.distanceSystem);
