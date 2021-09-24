@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:clima_mais/repositories/repositories.dart';
@@ -30,8 +31,22 @@ class ClimaMaisMaterial extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       locale: null,
-      theme: ThemeData(),
-      darkTheme: ThemeData(brightness: Brightness.dark),
+      theme: ThemeData(
+        primarySwatch: Colors.grey,
+        appBarTheme: const AppBarTheme(
+          foregroundColor: Colors.black,
+          backgroundColor: Colors.transparent,
+          systemOverlayStyle: SystemUiOverlayStyle.dark,
+        ),
+      ),
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+        appBarTheme: const AppBarTheme(
+          foregroundColor: Colors.white,
+          backgroundColor: Colors.transparent,
+        ),
+        scaffoldBackgroundColor: const Color(0xFF1D1B1B),
+      ),
       title: 'Clima Mais',
       home: const WeatherHomePage(),
       localizationsDelegates: AppLocalizations.localizationsDelegates,

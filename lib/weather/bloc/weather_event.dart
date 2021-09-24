@@ -11,6 +11,5 @@ class WeatherRequested extends WeatherEvent {
 }
 
 class WeatherRefreshed extends WeatherEvent {
-  final List<Location> locations;
-  const WeatherRefreshed({required this.locations});
+  const WeatherRefreshed();
 }

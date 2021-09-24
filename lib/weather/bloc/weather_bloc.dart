@@ -7,9 +7,10 @@ part 'weather_event.dart';
 part 'weather_state.dart';
 
 class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
-  final WeatherRepository weatherRepository;
-  WeatherBloc({required this.weatherRepository})
-      : super(const WeatherInitial()) {
+  final WeatherRepository _weatherRepository;
+  WeatherBloc({required WeatherRepository weatherRepository})
+      : _weatherRepository = weatherRepository,
+        super(const WeatherInitial()) {
     // New bloc API
     on<WeatherRequested>(_onWeatherRequested);
     on<WeatherRefreshed>(_onWeatherRefreshed);
@@ -20,8 +21,8 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
     emit(const WeatherLoadInProgress());
     final locations = event.locations;
     try {
-      final id = locations[0].woeid;
-      final weather = await weatherRepository.getWeatherById(id);
+      final id = locations.first.woeid;
+      final weather = await _weatherRepository.getWeatherById(id);
 
       emit(WeatherLoadSuccess(weather: weather, locations: locations));
     } on Exception catch (e) {
@@ -31,14 +32,42 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
 
   void _onWeatherRefreshed(
       WeatherRefreshed event, Emitter<WeatherState> emit) async {
-    final locations = event.locations;
-    try {
-      final id = locations[0].woeid;
-      final weather = await weatherRepository.getWeatherById(id);
+    final currentState = state;
 
-      emit(WeatherLoadSuccess(weather: weather, locations: locations));
-    } on Exception catch (e) {
-      emit(WeatherLoadFailure(exception: e, locations: locations));
+    if (currentState is WeatherLoadSuccess) {
+      late Location refreshedLocation;
+      final locations = currentState.locations;
+
+      try {
+        final currentLocation = locations.first;
+        if (currentLocation.locationType == LocationType.physical) {
+          //Update device location
+          refreshedLocation = await _updateLocation(currentLocation);
+        } else {
+          refreshedLocation = currentLocation;
+        }
+        final weather =
+            await _weatherRepository.getWeatherById(refreshedLocation.woeid);
+
+        emit(WeatherLoadSuccess(weather: weather, locations: locations));
+      } on Exception catch (e) {
+        emit(WeatherLoadFailure(exception: e, locations: locations));
+      }
+    }
+  }
+
+  Future<Location> _updateLocation(Location currentLocation) async {
+    try {
+      final coordinates = await _weatherRepository.getDeviceCoordinates();
+      if (currentLocation.lattLong == coordinates) {
+        return currentLocation; //to save an api call =)
+      } else {
+        final updatedLocations =
+            await _weatherRepository.getLocationByCoordinates(coordinates);
+        return updatedLocations.first;
+      }
+    } catch (e) {
+      return currentLocation.copyWith(locationType: LocationType.saved);
     }
   }
 }

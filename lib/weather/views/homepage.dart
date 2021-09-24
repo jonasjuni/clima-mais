@@ -1,5 +1,3 @@
-import 'package:clima_mais/location_search/location_search.dart';
-import 'package:clima_mais/settings/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:clima_mais/repositories/repositories.dart';
@@ -11,8 +9,8 @@ class WeatherHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) {
-        return WeatherBloc(
-            weatherRepository: context.read<WeatherRepository>());
+        return WeatherBloc(weatherRepository: context.read<WeatherRepository>())
+          ..add(const WeatherRefreshed());
       },
       child: const WeatherView(),
     );
@@ -24,8 +22,11 @@ class WeatherView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: Drawer(), // Todo: drawer side menu
       body: BlocConsumer<WeatherBloc, WeatherState>(
         listener: (context, state) {},
+        buildWhen: (previousState, currentState) =>
+            currentState.runtimeType != previousState.runtimeType,
         builder: (context, state) {
           if (state is WeatherInitial) {
             return const WeatherEmpty();
@@ -34,8 +35,28 @@ class WeatherView extends StatelessWidget {
             return const WeatherLoading();
           }
           if (state is WeatherLoadSuccess) {
-            return WeatherSuccess(
-              weather: state.weather,
+            return Stack(
+              children: [
+                Container(
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Colors.orange.shade700,
+                          Colors.yellow,
+                        ],
+                        tileMode: TileMode.repeated),
+                  ),
+                  child: FlutterLogo(
+                    size: 150,
+                  ),
+                ),
+                WeatherSuccess(
+                  weather: state.weather,
+                ),
+              ],
             );
           }
           if (state is WeatherLoadFailure) {
