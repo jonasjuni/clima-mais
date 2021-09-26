@@ -73,6 +73,7 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
 }
 
 extension WeatherXTemperature on WeatherForecast {
+  //Todo: fix temp covertion
   double get farenheitTemp {
     return _convertToFahrenheit(temp);
   }

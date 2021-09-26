@@ -125,7 +125,7 @@ class WeatherTitle extends StatelessWidget {
       final state = bloc.state as WeatherLoadSuccess;
       return state.weather.title;
     });
-
+    log('title build');
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: kLateralPadding),
       child: Text(
@@ -147,7 +147,7 @@ class WeatherDate extends StatelessWidget {
       final state = bloc.state as WeatherLoadSuccess;
       return state.weather.time;
     });
-
+    log('Time build');
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: kLateralPadding),
       child: Text(
@@ -173,19 +173,12 @@ class CurrentMainWeather extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          BlocBuilder<SettingsBloc, SettingsState>(
-            builder: (context, state) {
-              final String temp =
-                  state.settings.tempUnitSystem == TempUnitSystem.celsius
-                      ? weather.weatherForecasts.first.temp.round().toString()
-                      : weather.weatherForecasts.first.farenheitTemp
-                          .round()
-                          .toString();
-              return Text(
-                '$temp°',
-                style: Theme.of(context).textTheme.headline2,
-              );
-            },
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const CurrentTemperature(),
+              Text('Sunny'),
+            ],
           ),
           BlocSelector<WeatherBloc, WeatherState, String>(
             selector: (weatherState) {
@@ -193,15 +186,88 @@ class CurrentMainWeather extends StatelessWidget {
               return state.weather.weatherForecasts.first.abbr;
             },
             builder: (context, state) {
-              return Lottie.asset(
-                'assets/animations/$state.json',
-                width: 150,
-                height: 150,
+              log('animation build');
+              return Align(
+                alignment: Alignment.centerLeft,
+                widthFactor: 0.5,
+                child: Lottie.asset(
+                  'assets/animations/c.json',
+                  width: 300,
+                  height: 300,
+                ),
               );
             },
           ),
         ],
       ),
+    );
+  }
+}
+
+class MyCLipper extends CustomClipper<Rect> {
+  @override
+  Rect getClip(Size size) {
+    Rect path = const Offset(0, 0) & Size(size.width / 2, size.height);
+
+    return path;
+  }
+
+  @override
+  bool shouldReclip(covariant CustomClipper oldClipper) => true;
+}
+
+class CurrentTemperature extends StatelessWidget {
+  const CurrentTemperature({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final tempUnitSystem = context.select<SettingsBloc, TempUnitSystem>(
+        (bloc) => bloc.state.settings.tempUnitSystem);
+
+    var temp = context.select<WeatherBloc, double>((bloc) {
+      final state = bloc.state as WeatherLoadSuccess;
+      return state.weather.weatherForecasts.first.temp;
+    });
+
+    tempUnitSystem == TempUnitSystem.celsius
+        ? temp = temp
+        : temp = temp; //Todo: fix convertion
+
+    log('current temp build');
+    return Text(
+      '${temp.round()}°',
+      style: Theme.of(context).textTheme.headline1,
+    );
+  }
+}
+
+class MinMaxTemperature extends StatelessWidget {
+  const MinMaxTemperature({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final weatherForecast =
+        context.select<WeatherBloc, WeatherForecast>((WeatherBloc bloc) {
+      final state = bloc.state as WeatherLoadSuccess;
+
+      return state.weather.weatherForecasts.first;
+    });
+    return Row(
+      children: [
+        Icon(
+          Icons.thermostat_outlined,
+          color: Colors.red.withAlpha(100),
+          size: 20,
+        ),
+        Text(weatherForecast.maxTemp.round().toString()),
+        Icon(
+          Icons.thermostat,
+          color: Colors.blue,
+        ),
+        Text(weatherForecast.minTemp.round().toString()),
+      ],
     );
   }
 }

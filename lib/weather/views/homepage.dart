@@ -49,9 +49,6 @@ class WeatherView extends StatelessWidget {
                         ],
                         tileMode: TileMode.repeated),
                   ),
-                  child: FlutterLogo(
-                    size: 150,
-                  ),
                 ),
                 WeatherSuccess(
                   weather: state.weather,
