@@ -1,25 +1,43 @@
 {
-    "@@locale": "es",
-    "appTitle": "Meta Tiempo",
-    "homepageSelectCityRequest": "Por favor, Seleccione una ciudad",
-    "homepageLastUpdated" : "Actualizado: {date}",
-    "@homepageLastUpdated" : {
-        "description" : "Last time updated",
-        "placeholders": {
-            "date": {
-                "type": "DateTime",
-                "format": "jm"
-            }
-        }
-    },
-    "homepageLatitude" : "latitud: {latt}",
-    "@homepageLatitude" : {
-        "description" : "Geo localiztion number",
-        "placeholders": {
-            "latt": {
-            }
-        }
-    },
-    "selectCityFormCity" : "Ciudad",
-    "selectCityNotSupported": "Ciudad no soportada"
+  "@@locale": "es",
+  "@forecastDate": {
+    "description": "dia da previsão",
+    "placeholders": {
+      "date": {
+        "format": "MMMMEEEEd",
+        "type": "DateTime"
+      }
+    }
+  },
+  "@homepageLastUpdated": {
+    "description": "Last time updated",
+    "placeholders": {
+      "date": {
+        "format": "jm",
+        "type": "DateTime"
+      }
+    }
+  },
+  "appTitle": "Meta Tiempo",
+  "cloudy": "Cubierto",
+  "fog": "Neblina",
+  "forecastDate": "{date}",
+  "hail": "Granizo",
+  "heavyRain": "Lluvia Fuerte",
+  "heavySnow": "Fuertes nevadas",
+  "homepageLastUpdated": "Actualizado: {date}",
+  "homepageSelectCityRequest": "Por favor, Seleccione una ciudad",
+  "lightRain": "Llovizna",
+  "lightSnow": "Nieve ligera",
+  "mediumRain": "Lluvia",
+  "mediumSnow": "Nieve",
+  "partlyCloudy": "Intervalos nubosos",
+  "selectCityFormCity": "Ciudad",
+  "selectCityNotSupported": "Ciudad no soportada",
+  "showers": "Chubasco",
+  "sleet": "Aguanieve",
+  "smog": "Esmog",
+  "sunny": "Despejado",
+  "thunderstorm": "Tormenta",
+  "unknown": "No encontrado"
 }

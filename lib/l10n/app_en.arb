@@ -1,25 +1,43 @@
 {
-    "@@locale": "en",
-    "appTitle": "Meta Weather",
-    "homepageSelectCityRequest": "Please, select a city",
-    "homepageLastUpdated" : "Updated: {date}",
-    "@homepageLastUpdated" : {
-        "description" : "Last time updated",
-        "placeholders": {
-            "date": {
-                "type": "DateTime",
-                "format": "jm"
-            }
-        }
-    },
-    "homepageLatitude" : "Latitude: {latt}",
-    "@homepageLatitude" : {
-        "description" : "Geo localiztion number",
-        "placeholders": {
-            "latt": {
-            }
-        }
-    },
-    "selectCityFormCity" : "City",
-    "selectCityNotSupported": "City not supported"
+  "@@locale": "en",
+  "@forecastDate": {
+    "description": "Applicable weather date",
+    "placeholders": {
+      "date": {
+        "format": "MMMMEEEEd",
+        "type": "DateTime"
+      }
+    }
+  },
+  "@homepageLastUpdated": {
+    "description": "Last time updated",
+    "placeholders": {
+      "date": {
+        "format": "jm",
+        "type": "DateTime"
+      }
+    }
+  },
+  "appTitle": "Meta Weather",
+  "cloudy": "Cloudy",
+  "fog": "Fog",
+  "forecastDate": "{date}",
+  "hail": "Hail",
+  "heavyRain": "Heavy rain",
+  "heavySnow": "Heavy snow",
+  "homepageLastUpdated": "Updated: {date}",
+  "homepageSelectCityRequest": "Please, select a city",
+  "lightRain": "Light rain",
+  "lightSnow": "Light snow",
+  "mediumRain": "Medium rain",
+  "mediumSnow": "Medium Snow",
+  "partlyCloudy": "Mostly Cloudy",
+  "selectCityFormCity": "City",
+  "selectCityNotSupported": "City not supported",
+  "showers": "Showers",
+  "sleet": "Sleet",
+  "smog": "Smog",
+  "sunny": "Sunny",
+  "thunderstorm": "Thunderstorm",
+  "unknown": "unknown"
 }

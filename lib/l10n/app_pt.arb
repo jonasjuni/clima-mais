@@ -1,25 +1,43 @@
 {
-    "@@locale": "pt",
-    "appTitle": "Meta Tempo",
-    "homepageSelectCityRequest": "Por favor, selecionar uma cidade",
-    "homepageLastUpdated" : "Atualizado: {date}",
-    "@homepageLastUpdated" : {
-        "description" : "Last time updated",
-        "placeholders": {
-            "date": {
-                "type": "DateTime",
-                "format": "jm"
-            }
-        }
-    },
-    "homepageLatitude" : "Latitude: {latt}",
-    "@homepageLatitude" : {
-        "description" : "Geo localiztion number",
-        "placeholders": {
-            "latt": {
-            }
-        }
-    },
-    "selectCityFormCity" : "Cidade",
-    "selectCityNotSupported": "Cidade não suportada"
+  "@@locale": "pt",
+  "@forecastDate": {
+    "description": "dia da previsão",
+    "placeholders": {
+      "date": {
+        "format": "MMMMEEEEd",
+        "type": "DateTime"
+      }
+    }
+  },
+  "@homepageLastUpdated": {
+    "description": "Last time updated",
+    "placeholders": {
+      "date": {
+        "format": "jm",
+        "type": "DateTime"
+      }
+    }
+  },
+  "appTitle": "Meta Tempo",
+  "cloudy": "Nublado",
+  "fog": "Neblina",
+  "forecastDate": "{date}",
+  "hail": "Granizo",
+  "heavyRain": "Chuva pesada",
+  "heavySnow": " Neve pesada",
+  "homepageLastUpdated": "Atualizado: {date}",
+  "homepageSelectCityRequest": "Por favor, selecionar uma cidade",
+  "lightRain": "Chuva leve",
+  "lightSnow": "Neve leve",
+  "mediumRain": "Chuva",
+  "mediumSnow": "Neve",
+  "partlyCloudy": "Muitas nuvens",
+  "selectCityFormCity": "Cidade",
+  "selectCityNotSupported": "Cidade não suportada",
+  "showers": "Pancadas de chuva",
+  "sleet": "Aguaneve",
+  "smog": "Smog",
+  "sunny": "Ensolarado",
+  "thunderstorm": "Trovoada",
+  "unknown": "Não encontrado"
 }

@@ -1,16 +1,40 @@
 enum WeatherCondition {
-  snow,
-  sleet,
+  cloudy,
+  fog,
   hail,
-  thunderstorm,
   heavyRain,
+  heavySnow,
   lightRain,
+  lightSnow,
+  mediumRain,
+  mediumSnow,
   showers,
-  heavyCloud,
-  lightCloud,
-  clear,
+  partlyCloudy,
+  sleet,
+  smog,
+  sunny,
+  thunderstorm,
   unknown,
 }
+
+const _weatherConditionEnumMap = {
+  WeatherCondition.cloudy: 'cloudy',
+  WeatherCondition.fog: 'fog',
+  WeatherCondition.hail: 'hail',
+  WeatherCondition.heavyRain: 'heavy_rain',
+  WeatherCondition.heavySnow: 'heavy_snow',
+  WeatherCondition.lightRain: 'light_rain',
+  WeatherCondition.lightSnow: 'light_snow',
+  WeatherCondition.mediumRain: 'medium_rain',
+  WeatherCondition.mediumSnow: 'medium_snow',
+  WeatherCondition.partlyCloudy: 'partly_cloudy',
+  WeatherCondition.showers: 'showers',
+  WeatherCondition.sleet: 'sleet',
+  WeatherCondition.smog: 'smog',
+  WeatherCondition.sunny: 'sunny',
+  WeatherCondition.thunderstorm: 'thunderstorm',
+  WeatherCondition.unknown: 'unkown',
+};
 
 class WeatherForecast {
   WeatherForecast({
@@ -24,6 +48,7 @@ class WeatherForecast {
     required this.windSpeed,
     required this.windDirection,
     required this.created,
+    required this.date,
   });
 
   final WeatherCondition condition;
@@ -34,22 +59,9 @@ class WeatherForecast {
   final double humidity;
   final double airPressure;
   final double windSpeed;
-  final double windDirection;
+  final String windDirection;
   final DateTime created;
+  final DateTime date;
 
-  String get abbr => _$WeatherConditionEnumMap[condition]!;
+  String get conditionAnimation => _weatherConditionEnumMap[condition]!;
 }
-
-const _$WeatherConditionEnumMap = {
-  WeatherCondition.snow: 'sn',
-  WeatherCondition.sleet: 'sl',
-  WeatherCondition.hail: 'h',
-  WeatherCondition.thunderstorm: 't',
-  WeatherCondition.heavyRain: 'hr',
-  WeatherCondition.lightRain: 'lr',
-  WeatherCondition.showers: 's',
-  WeatherCondition.heavyCloud: 'hc',
-  WeatherCondition.lightCloud: 'lc',
-  WeatherCondition.clear: 'c',
-  WeatherCondition.unknown: 'unknown',
-};

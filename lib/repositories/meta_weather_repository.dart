@@ -76,57 +76,59 @@ extension MetaWeatherLocationXLocation on meta_weather.Location {
       Location(title, woeid, lattLong.toCoordinates(), LocationType.physical);
 }
 
-extension ConsolidatedWeatherdWeatherXWeatherForecast
+extension ConsolidatedWeatherdXWeatherForecast
     on meta_weather.ConsolidatedWeather {
   WeatherForecast toWeatherForecast() {
     final WeatherCondition weatherCondition;
-    switch (condition) {
-      case meta_weather.WeatherCondition.snow:
-        weatherCondition = WeatherCondition.snow;
+    switch (weatherState) {
+      case meta_weather.WeatherState.snow:
+        weatherCondition = WeatherCondition.mediumSnow;
         break;
-      case meta_weather.WeatherCondition.sleet:
+      case meta_weather.WeatherState.sleet:
         weatherCondition = WeatherCondition.sleet;
         break;
-      case meta_weather.WeatherCondition.hail:
-        weatherCondition = WeatherCondition.hail;
+      case meta_weather.WeatherState.hail:
+        weatherCondition = WeatherCondition.unknown;
         break;
-      case meta_weather.WeatherCondition.thunderstorm:
+      case meta_weather.WeatherState.thunderstorm:
         weatherCondition = WeatherCondition.thunderstorm;
         break;
-      case meta_weather.WeatherCondition.heavyRain:
+      case meta_weather.WeatherState.heavyRain:
         weatherCondition = WeatherCondition.heavyRain;
         break;
-      case meta_weather.WeatherCondition.lightRain:
+      case meta_weather.WeatherState.lightRain:
         weatherCondition = WeatherCondition.lightRain;
         break;
-      case meta_weather.WeatherCondition.showers:
-        weatherCondition = WeatherCondition.showers;
+      case meta_weather.WeatherState.showers:
+        weatherCondition = WeatherCondition.mediumRain;
         break;
-      case meta_weather.WeatherCondition.heavyCloud:
-        weatherCondition = WeatherCondition.heavyCloud;
+      case meta_weather.WeatherState.heavyCloud:
+        weatherCondition = WeatherCondition.cloudy;
         break;
-      case meta_weather.WeatherCondition.lightCloud:
-        weatherCondition = WeatherCondition.lightCloud;
+      case meta_weather.WeatherState.lightCloud:
+        weatherCondition = WeatherCondition.partlyCloudy;
         break;
-      case meta_weather.WeatherCondition.clear:
-        weatherCondition = WeatherCondition.clear;
+      case meta_weather.WeatherState.clear:
+        weatherCondition = WeatherCondition.sunny;
         break;
-      case meta_weather.WeatherCondition.unknown:
+      case meta_weather.WeatherState.unknownEntry:
         weatherCondition = WeatherCondition.unknown;
         break;
     }
 
     return WeatherForecast(
-        condition: weatherCondition,
-        weatherStateName: weatherStateName,
-        minTemp: minTemp,
-        maxTemp: maxTemp,
-        temp: temp,
-        humidity: 0,
-        airPressure: 0,
-        windSpeed: 0,
-        windDirection: 0,
-        created: created);
+      condition: weatherCondition,
+      weatherStateName: weatherStateName,
+      minTemp: minTemp,
+      maxTemp: maxTemp,
+      temp: theTemp,
+      humidity: humidity,
+      airPressure: airPressure,
+      windSpeed: windSpeed,
+      windDirection: windDirectionCompass,
+      created: created,
+      date: applicableDate,
+    );
   }
 }
 

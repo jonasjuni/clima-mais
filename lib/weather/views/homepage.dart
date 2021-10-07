@@ -37,22 +37,20 @@ class WeatherView extends StatelessWidget {
           if (state is WeatherLoadSuccess) {
             return Stack(
               children: [
-                Container(
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          Colors.orange.shade700,
-                          Colors.yellow,
-                        ],
-                        tileMode: TileMode.repeated),
-                  ),
-                ),
-                WeatherSuccess(
-                  weather: state.weather,
-                ),
+                // Container(
+                //   alignment: Alignment.center,
+                //   decoration: BoxDecoration(
+                //     gradient: LinearGradient(
+                //         begin: Alignment.topCenter,
+                //         end: Alignment.bottomCenter,
+                //         colors: [
+                //           Colors.orange.shade700,
+                //           Colors.yellow,
+                //         ],
+                //         tileMode: TileMode.repeated),
+                //   ),
+                // ),
+                WeatherSuccess(),
               ],
             );
           }
