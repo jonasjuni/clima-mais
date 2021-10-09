@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:clima_mais/settings/settings.dart';
 import 'package:clima_mais/location_search/location_search.dart';
@@ -40,6 +41,13 @@ class WeatherSuccess extends StatelessWidget {
                 WeatherUtilitsWidget(),
                 WeatherLastUpdated(),
                 WeeklyForecastList(),
+                ElevatedButton(
+                  onPressed: () {
+                    log('Vibrate');
+                    HapticFeedback.heavyImpact();
+                  },
+                  child: Text('Vibrate'),
+                ),
               ],
             ),
           ),
@@ -85,16 +93,14 @@ class AppBar extends StatelessWidget {
     return SliverAppBar(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       elevation: 0,
-      expandedHeight: 100,
-      automaticallyImplyLeading: true,
+      toolbarHeight: 0,
+      expandedHeight: 10,
+      automaticallyImplyLeading: false,
       pinned: true,
+      stretch: true,
       flexibleSpace: FlexibleSpaceBar(
-        background: Container(color: Colors.red),
-        title: Text('test'),
         stretchModes: [
           StretchMode.zoomBackground,
-          StretchMode.fadeTitle,
-          StretchMode.blurBackground,
         ],
       ),
       // actions: [
