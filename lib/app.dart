@@ -30,22 +30,16 @@ class ClimaMaisMaterial extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      restorationScopeId: 'app',
       locale: null,
       theme: ThemeData(
-        primarySwatch: Colors.grey,
-        appBarTheme: const AppBarTheme(
-          foregroundColor: Colors.black,
-          backgroundColor: Colors.transparent,
-          systemOverlayStyle: SystemUiOverlayStyle.dark,
-        ),
+        primarySwatch: Colors.orange,
+        appBarTheme:
+            const AppBarTheme(systemOverlayStyle: SystemUiOverlayStyle.dark),
       ),
-      darkTheme: ThemeData(
-        brightness: Brightness.dark,
-        appBarTheme: const AppBarTheme(
-          foregroundColor: Colors.white,
-          backgroundColor: Colors.transparent,
-        ),
-        scaffoldBackgroundColor: const Color(0xFF1D1B1B),
+      darkTheme: ThemeData.dark().copyWith(
+        appBarTheme:
+            const AppBarTheme(systemOverlayStyle: SystemUiOverlayStyle.light),
       ),
       title: 'Clima Mais',
       home: const WeatherHomePage(),

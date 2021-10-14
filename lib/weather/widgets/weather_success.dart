@@ -19,6 +19,11 @@ class WeatherSuccess extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
+    final viewPortheight = mediaQuery.size.height;
+    final topSafeHeight = mediaQuery.size.height - mediaQuery.padding.top;
+    final safeHeight =
+        viewPortheight - mediaQuery.padding.top - mediaQuery.padding.bottom;
     return RefreshIndicator(
       onRefresh: () {
         final bloc = context.read<WeatherBloc>();
@@ -28,26 +33,37 @@ class WeatherSuccess extends StatelessWidget {
       },
       child: CustomScrollView(
         slivers: [
-          AppBar(),
+          StatusBarHack(),
           SliverList(
             delegate: SliverChildListDelegate.fixed(
               [
-                WeatherTitle(),
-                WeatherSubtitle(),
-                CurrentMainWeather(),
-                ConditionTitle(),
-                MinMaxTemperature(),
-                SizedBox(height: 300),
-                WeatherUtilitsWidget(),
-                WeatherLastUpdated(),
-                WeeklyForecastList(),
-                ElevatedButton(
-                  onPressed: () {
-                    log('Vibrate');
-                    HapticFeedback.heavyImpact();
-                  },
-                  child: Text('Vibrate'),
+                Stack(
+                  children: [
+                    DynamicBackground(height: topSafeHeight),
+                    ConstrainedBox(
+                      constraints: BoxConstraints(maxHeight: safeHeight),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: kLateralPadding),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ActionsMenu(),
+                            WeatherTitle(),
+                            WeatherSubtitle(),
+                            CurrentMainWeather(),
+                            // ConditionTitle(),
+                            // MinMaxTemperature(),
+                            Spacer(),
+                            WeatherUtilitsWidget(),
+                            WeatherLastUpdated(),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
+                WeeklyForecastList(),
               ],
             ),
           ),
@@ -57,23 +73,67 @@ class WeatherSuccess extends StatelessWidget {
   }
 }
 
-class TestPrintText extends StatelessWidget {
-  const TestPrintText({
+class DynamicBackground extends StatelessWidget {
+  const DynamicBackground({
     Key? key,
-    required this.index,
+    required this.height,
   }) : super(key: key);
 
-  final int index;
+  final double height;
 
   @override
   Widget build(BuildContext context) {
-    log('Sliver: $index');
-    return Text(index.toString());
+    final weatherCondition =
+        context.select<WeatherBloc, WeatherCondition>((WeatherBloc bloc) {
+      final state = bloc.state as WeatherLoadSuccess;
+      return state.weather.weatherForecasts.first.condition;
+    });
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    final background = isDarkMode
+        ? 'assets/images/background/dark_${weatherCondition.toSnakeCase}.png'
+        : 'assets/images/background/${weatherCondition.toSnakeCase}.png';
+
+    return Ink(
+      //Todo: Animate Decoration
+      width: double.infinity,
+      height: height,
+      decoration: BoxDecoration(
+        color: Color(weatherCondition.toColor(isDarkMode)),
+        image: DecorationImage(
+          image: AssetImage(background),
+          fit: BoxFit.cover,
+        ),
+      ),
+    );
   }
 }
 
-class AppBar extends StatelessWidget {
-  const AppBar({Key? key}) : super(key: key);
+class StatusBarHack extends StatelessWidget {
+  const StatusBarHack({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final weatherCondition =
+        context.select<WeatherBloc, WeatherCondition>((WeatherBloc bloc) {
+      final state = bloc.state as WeatherLoadSuccess;
+      return state.weather.weatherForecasts.first.condition;
+    });
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
+    return SliverAppBar(
+      elevation: 0,
+      toolbarHeight: 0,
+      systemOverlayStyle: null,
+      backgroundColor:
+          Color(weatherCondition.toColor(isDarkMode)), // Todo: dynamic color
+      pinned: true,
+      actions: [Icon(Icons.add)],
+    );
+  }
+}
+
+class ActionsMenu extends StatelessWidget {
+  const ActionsMenu({Key? key}) : super(key: key);
 
   void _onpressed(BuildContext context) async {
     final state = context.read<WeatherBloc>().state as WeatherLoadSuccess;
@@ -90,25 +150,20 @@ class AppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SliverAppBar(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      elevation: 0,
-      toolbarHeight: 0,
-      expandedHeight: 10,
-      automaticallyImplyLeading: false,
-      pinned: true,
-      stretch: true,
-      flexibleSpace: FlexibleSpaceBar(
-        stretchModes: [
-          StretchMode.zoomBackground,
-        ],
-      ),
-      // actions: [
-      //   IconButton(
-      //     icon: const Icon(Icons.add),
-      //     onPressed: () => _onpressed(context),
-      //   ),
-      // ],
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        IconButton(
+          onPressed: () => Scaffold.of(context).openDrawer(),
+          icon: Icon(Icons.menu),
+        ),
+        IconButton(
+          onPressed: () => _onpressed(context),
+          icon: Icon(
+            Icons.add,
+          ),
+        ),
+      ],
     );
   }
 }
@@ -124,12 +179,9 @@ class WeatherTitle extends StatelessWidget {
       final state = bloc.state as WeatherLoadSuccess;
       return state.weather.title;
     });
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: kLateralPadding),
-      child: Text(
-        title,
-        style: Theme.of(context).textTheme.headline6,
-      ),
+    return Text(
+      title,
+      style: Theme.of(context).textTheme.headline6,
     );
   }
 }
@@ -145,12 +197,9 @@ class WeatherSubtitle extends StatelessWidget {
       final state = bloc.state as WeatherLoadSuccess;
       return state.weather.weatherForecasts.first.date;
     });
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: kLateralPadding),
-      child: Text(
-        AppLocalizations.of(context).forecastDate(date), //Todo: L10n
-        style: Theme.of(context).textTheme.subtitle1,
-      ),
+    return Text(
+      AppLocalizations.of(context).forecastDate(date), //Todo: L10n
+      style: Theme.of(context).textTheme.subtitle1,
     );
   }
 }
@@ -162,55 +211,62 @@ class CurrentMainWeather extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: kLateralPadding),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Flexible(
-            child: BlocSelector<WeatherBloc, WeatherState, double>(
-                selector: (weatherState) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Flexible(
+          child: BlocSelector<WeatherBloc, WeatherState, double>(
+              selector: (weatherState) {
+            final state = weatherState as WeatherLoadSuccess;
+            return state.weather.weatherForecasts.first.temp;
+          }, builder: (context, state) {
+            var temp = state;
+            final tempUnitSystem = context.select<SettingsBloc, TempUnitSystem>(
+                (bloc) => bloc.state.settings.tempUnitSystem);
+
+            tempUnitSystem == TempUnitSystem.celsius
+                ? temp = temp
+                : temp = temp; //Todo: fix convertion
+
+            return FittedBox(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '${temp.round()}°',
+                    style: Theme.of(context).textTheme.headline1,
+                  ),
+                  ConditionTitle(),
+                  MinMaxTemperature(),
+                ],
+              ),
+            );
+          }),
+        ),
+        Flexible(
+          child: BlocSelector<WeatherBloc, WeatherState, String>(
+            selector: (weatherState) {
               final state = weatherState as WeatherLoadSuccess;
-              return state.weather.weatherForecasts.first.temp;
-            }, builder: (context, state) {
-              var temp = state;
-              final tempUnitSystem =
-                  context.select<SettingsBloc, TempUnitSystem>(
-                      (bloc) => bloc.state.settings.tempUnitSystem);
-
-              tempUnitSystem == TempUnitSystem.celsius
-                  ? temp = temp
-                  : temp = temp; //Todo: fix convertion
-
-              return FittedBox(
-                child: Text(
-                  '${temp.round()}°',
-                  style: Theme.of(context).textTheme.headline1,
+              return state.weather.weatherForecasts.first.conditionAnimation;
+            },
+            builder: (context, state) {
+              final String brightness =
+                  Theme.of(context).brightness == Brightness.light
+                      ? ''
+                      : 'colors/';
+              return Align(
+                alignment: Alignment.centerLeft,
+                widthFactor: 0.9,
+                child: Lottie.asset(
+                  'assets/animations/weather/$brightness$state.json',
+                  width: 200,
+                  height: 200,
                 ),
               );
-            }),
+            },
           ),
-          Flexible(
-            child: BlocSelector<WeatherBloc, WeatherState, String>(
-              selector: (weatherState) {
-                final state = weatherState as WeatherLoadSuccess;
-                return state.weather.weatherForecasts.first.conditionAnimation;
-              },
-              builder: (context, state) {
-                return Align(
-                  alignment: Alignment.centerLeft,
-                  widthFactor: 0.9,
-                  child: Lottie.asset(
-                    'assets/animations/weather/colors/$state.json',
-                    width: 200,
-                    height: 200,
-                  ),
-                );
-              },
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
@@ -276,10 +332,7 @@ class ConditionTitle extends StatelessWidget {
         conditionText = AppLocalizations.of(context).unknown;
         break;
     }
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: kLateralPadding),
-      child: Text(conditionText, style: Theme.of(context).textTheme.headline6),
-    );
+    return Text(conditionText, style: Theme.of(context).textTheme.headline6);
   }
 }
 
@@ -294,26 +347,24 @@ class MinMaxTemperature extends StatelessWidget {
 
       return state.weather.weatherForecasts.first;
     });
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: kLateralPadding),
-      child: Row(
-        children: [
-          Text(
-            '${weatherForecast.maxTemp.round().toString()}°',
-            style: Theme.of(context).textTheme.subtitle2,
-          ),
-          Text(
-            '${weatherForecast.minTemp.round().toString()}°',
-            style: Theme.of(context).textTheme.subtitle2,
-          ),
-        ],
-      ),
+    return Row(
+      children: [
+        Text(
+          '${weatherForecast.maxTemp.round().toString()}°',
+          style: Theme.of(context).textTheme.subtitle2,
+        ),
+        Text(
+          '${weatherForecast.minTemp.round().toString()}°',
+          style: Theme.of(context).textTheme.subtitle2,
+        ),
+      ],
     );
   }
 }
 
 class WeatherUtilitsWidget extends StatelessWidget {
   const WeatherUtilitsWidget({Key? key}) : super(key: key);
+  final borderRadius = 20.0;
 
   @override
   Widget build(BuildContext context) {
@@ -323,33 +374,40 @@ class WeatherUtilitsWidget extends StatelessWidget {
       return state.weather.weatherForecasts.first;
     });
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-          horizontal: kLateralPadding, vertical: kVerticalSpacing * 4),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Row(
-            children: [
-              const Icon(Icons.air),
-              Text('${weatherState.airPressure}'),
-            ],
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(borderRadius),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: kVerticalSpacing * 4),
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.surface.withAlpha(30),
+            border:
+                Border.all(color: Theme.of(context).colorScheme.onBackground),
+            borderRadius: BorderRadius.circular(borderRadius),
           ),
-          Row(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              const Icon(
-                Icons.opacity_outlined,
+              Column(
+                children: [Text('${weatherState.humidity}%'), Text('Humidity')],
               ),
-              Text('${weatherState.humidity}%'),
+              Column(
+                children: [
+                  Text('${num.parse('111.0')} mbar'),
+                  Text('Air Pressure'), //Todo: Localize
+                ],
+              ),
+              Column(
+                children: [
+                  Text(
+                      '${num.parse(weatherState.windSpeed.toStringAsFixed(1))} mph'), //Todo:
+                  Text('Wind Speed'),
+                ],
+              ),
             ],
           ),
-          Row(
-            children: [
-              const Icon(Icons.south_east),
-              Text(' wind ${weatherState.windDirection}'),
-            ],
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -366,9 +424,12 @@ class WeatherLastUpdated extends StatelessWidget {
       final state = bloc.state as WeatherLoadSuccess;
       return state.weather.time;
     });
-    return Center(
-      child: Text(
-          AppLocalizations.of(context).homepageLastUpdated(time.toLocal())),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: kVerticalSpacing * 4),
+      child: Center(
+        child: Text(
+            AppLocalizations.of(context).homepageLastUpdated(time.toLocal())),
+      ),
     );
   }
 }
@@ -415,16 +476,13 @@ class WeeklyForecastList extends StatelessWidget {
     return Container(
         color: Theme.of(context).colorScheme.surface.withAlpha(50),
         padding: const EdgeInsets.symmetric(
-            vertical: kVerticalSpacing * 6, horizontal: kLateralPadding),
+            vertical: kVerticalSpacing * 4, horizontal: kLateralPadding),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: kVerticalSpacing),
-              child: Text(
-                'Weekly',
-                style: Theme.of(context).textTheme.headline6,
-              ),
+            Text(
+              'Weekly',
+              style: Theme.of(context).textTheme.headline6,
             ), //Todo: l10n
             ...List.generate(
                 weatherForecastList.length,

@@ -36,6 +36,43 @@ const _weatherConditionEnumMap = {
   WeatherCondition.unknown: 'unkown',
 };
 
+const _nightConditionColors = {
+  WeatherCondition.cloudy: 0xFF0028A2,
+  WeatherCondition.fog: 0xFF0028A2,
+  WeatherCondition.hail: 0xFF0028A2,
+  WeatherCondition.heavyRain: 0xFF0028A2,
+  WeatherCondition.heavySnow: 0xFF0028A2,
+  WeatherCondition.lightRain: 0xFF0028A2,
+  WeatherCondition.lightSnow: 0xFF0028A2,
+  WeatherCondition.mediumRain: 0xFF0028A2,
+  WeatherCondition.mediumSnow: 0xFF0028A2,
+  WeatherCondition.partlyCloudy: 0xFF0028A2,
+  WeatherCondition.showers: 0xFF0028A2,
+  WeatherCondition.sleet: 0xFF0028A2,
+  WeatherCondition.smog: 0xFF0028A2,
+  WeatherCondition.sunny: 0xFF0028A2,
+  WeatherCondition.thunderstorm: 0xFF0028A2,
+  WeatherCondition.unknown: 0xFF0028A2
+};
+const _dayConditionColors = {
+  WeatherCondition.cloudy: 0xffffd759,
+  WeatherCondition.fog: 0xffffd759,
+  WeatherCondition.hail: 0xffffd759,
+  WeatherCondition.heavyRain: 0xffffd759,
+  WeatherCondition.heavySnow: 0xffffd759,
+  WeatherCondition.lightRain: 0xffffd759,
+  WeatherCondition.lightSnow: 0xffffd759,
+  WeatherCondition.mediumRain: 0xffffd759,
+  WeatherCondition.mediumSnow: 0xffffd759,
+  WeatherCondition.partlyCloudy: 0xffffd759,
+  WeatherCondition.showers: 0xffffd759,
+  WeatherCondition.sleet: 0xffffd759,
+  WeatherCondition.smog: 0xffffd759,
+  WeatherCondition.sunny: 0xffffd759,
+  WeatherCondition.thunderstorm: 0xffffd759,
+  WeatherCondition.unknown: 0xffffd759
+};
+
 class WeatherForecast {
   WeatherForecast({
     required this.condition,
@@ -64,4 +101,11 @@ class WeatherForecast {
   final DateTime date;
 
   String get conditionAnimation => _weatherConditionEnumMap[condition]!;
+}
+
+extension WeatherConditionX on WeatherCondition {
+  int toColor(bool darkMode) =>
+      darkMode ? _nightConditionColors[this]! : _dayConditionColors[this]!;
+
+  String get toSnakeCase => _weatherConditionEnumMap[this]!;
 }
