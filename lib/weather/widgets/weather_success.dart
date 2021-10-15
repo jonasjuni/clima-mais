@@ -281,58 +281,8 @@ class ConditionTitle extends StatelessWidget {
       return state.weather.weatherForecasts.first.condition;
     });
 
-    String conditionText;
-    switch (weatherCondition) {
-      case WeatherCondition.cloudy:
-        conditionText = AppLocalizations.of(context).cloudy;
-        break;
-      case WeatherCondition.fog:
-        conditionText = AppLocalizations.of(context).fog;
-        break;
-      case WeatherCondition.hail:
-        conditionText = AppLocalizations.of(context).hail;
-        break;
-      case WeatherCondition.heavyRain:
-        conditionText = AppLocalizations.of(context).heavyRain;
-        break;
-      case WeatherCondition.heavySnow:
-        conditionText = AppLocalizations.of(context).heavySnow;
-        break;
-      case WeatherCondition.lightRain:
-        conditionText = AppLocalizations.of(context).lightRain;
-        break;
-      case WeatherCondition.lightSnow:
-        conditionText = AppLocalizations.of(context).lightSnow;
-        break;
-      case WeatherCondition.mediumRain:
-        conditionText = AppLocalizations.of(context).mediumRain;
-        break;
-      case WeatherCondition.mediumSnow:
-        conditionText = AppLocalizations.of(context).mediumSnow;
-        break;
-      case WeatherCondition.showers:
-        conditionText = AppLocalizations.of(context).showers;
-        break;
-      case WeatherCondition.partlyCloudy:
-        conditionText = AppLocalizations.of(context).partlyCloudy;
-        break;
-      case WeatherCondition.sleet:
-        conditionText = AppLocalizations.of(context).sleet;
-        break;
-      case WeatherCondition.smog:
-        conditionText = AppLocalizations.of(context).smog;
-        break;
-      case WeatherCondition.sunny:
-        conditionText = AppLocalizations.of(context).sunny;
-        break;
-      case WeatherCondition.thunderstorm:
-        conditionText = AppLocalizations.of(context).thunderstorm;
-        break;
-      case WeatherCondition.unknown:
-        conditionText = AppLocalizations.of(context).unknown;
-        break;
-    }
-    return Text(conditionText, style: Theme.of(context).textTheme.headline6);
+    return Text(weatherCondition.toLocalizedTitle(context),
+        style: Theme.of(context).textTheme.headline6);
   }
 }
 
@@ -390,19 +340,24 @@ class WeatherUtilitsWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Column(
-                children: [Text('${weatherState.humidity}%'), Text('Humidity')],
+                children: [
+                  Text('${weatherState.humidity}%'),
+                  Text(AppLocalizations.of(context).humidity)
+                ],
               ),
               Column(
                 children: [
-                  Text('${num.parse('111.0')} mbar'),
-                  Text('Air Pressure'), //Todo: Localize
+                  Text('${weatherState.airPressure.toStringAsFixed(1)} mbar'),
+                  Text(AppLocalizations.of(context)
+                      .airPressure), //Todo: Localize
                 ],
               ),
               Column(
                 children: [
                   Text(
-                      '${num.parse(weatherState.windSpeed.toStringAsFixed(1))} mph'), //Todo:
-                  Text('Wind Speed'),
+                      '${weatherState.windSpeed.toStringAsFixed(1)} mph'), //Todo: localize
+
+                  Text(AppLocalizations.of(context).windSpeed),
                 ],
               ),
             ],
@@ -474,14 +429,15 @@ class WeeklyForecastList extends StatelessWidget {
     });
 
     return Container(
-        color: Theme.of(context).colorScheme.surface.withAlpha(50),
+        color: Theme.of(context).colorScheme.surface,
+        margin: const EdgeInsets.symmetric(vertical: kVerticalSpacing * 6),
         padding: const EdgeInsets.symmetric(
-            vertical: kVerticalSpacing * 4, horizontal: kLateralPadding),
+            vertical: kVerticalSpacing * 2, horizontal: kLateralPadding),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Weekly',
+              AppLocalizations.of(context).weekWeek,
               style: Theme.of(context).textTheme.headline6,
             ), //Todo: l10n
             ...List.generate(
@@ -506,17 +462,18 @@ class WeeklyForecastItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    late String titleDay;
+    late String weekDay;
 
     switch (index) {
       case 0:
-        titleDay = 'Today';
+        weekDay = AppLocalizations.of(context).weekToday;
         break;
       case 1:
-        titleDay = 'Tomorrow';
+        weekDay = AppLocalizations.of(context).weekTomorrow;
         break;
       default:
-        titleDay = 'Weekday';
+        weekDay = AppLocalizations.of(context)
+            .weekDay(weatherForecast.date.toLocal());
     }
     log(index.toString());
 
@@ -528,11 +485,12 @@ class WeeklyForecastItem extends StatelessWidget {
           children: [
             Expanded(
               flex: 2,
-              child: Text(titleDay),
+              child: Text(weekDay),
             ),
             Expanded(
-              child: Text(weatherForecast.weatherStateName),
+              child: Text(weatherForecast.condition.toLocalizedTitle(context)),
             ),
+            //Todo: include icon
             Expanded(
               flex: 0,
               child: Text(
@@ -542,5 +500,44 @@ class WeeklyForecastItem extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+extension WeatherConditionXL10n on WeatherCondition {
+  String toLocalizedTitle(BuildContext context) {
+    switch (this) {
+      case WeatherCondition.cloudy:
+        return AppLocalizations.of(context).cloudy;
+      case WeatherCondition.fog:
+        return AppLocalizations.of(context).fog;
+      case WeatherCondition.hail:
+        return AppLocalizations.of(context).hail;
+      case WeatherCondition.heavyRain:
+        return AppLocalizations.of(context).heavyRain;
+      case WeatherCondition.heavySnow:
+        return AppLocalizations.of(context).heavySnow;
+      case WeatherCondition.lightRain:
+        return AppLocalizations.of(context).lightRain;
+      case WeatherCondition.lightSnow:
+        return AppLocalizations.of(context).lightSnow;
+      case WeatherCondition.mediumRain:
+        return AppLocalizations.of(context).mediumRain;
+      case WeatherCondition.mediumSnow:
+        return AppLocalizations.of(context).mediumSnow;
+      case WeatherCondition.showers:
+        return AppLocalizations.of(context).showers;
+      case WeatherCondition.partlyCloudy:
+        return AppLocalizations.of(context).partlyCloudy;
+      case WeatherCondition.sleet:
+        return AppLocalizations.of(context).sleet;
+      case WeatherCondition.smog:
+        return AppLocalizations.of(context).smog;
+      case WeatherCondition.sunny:
+        return AppLocalizations.of(context).sunny;
+      case WeatherCondition.thunderstorm:
+        return AppLocalizations.of(context).thunderstorm;
+      case WeatherCondition.unknown:
+        return AppLocalizations.of(context).unknown;
+    }
   }
 }

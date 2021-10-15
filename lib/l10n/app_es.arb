@@ -4,7 +4,6 @@
     "description": "dia da previsão",
     "placeholders": {
       "date": {
-        "format": "MMMMEEEEd",
         "type": "DateTime"
       }
     }
@@ -13,11 +12,19 @@
     "description": "Last time updated",
     "placeholders": {
       "date": {
-        "format": "jm",
         "type": "DateTime"
       }
     }
   },
+  "@weekDay": {
+    "description": "Dia da Semana",
+    "placeholders": {
+      "date": {
+        "type": "DateTime"
+      }
+    }
+  },
+  "airPressure": "Presión Atmosférica",
   "appTitle": "Meta Tiempo",
   "cloudy": "Cubierto",
   "fog": "Neblina",
@@ -27,6 +34,7 @@
   "heavySnow": "Fuertes nevadas",
   "homepageLastUpdated": "Actualizado: {date}",
   "homepageSelectCityRequest": "Por favor, Seleccione una ciudad",
+  "humidity": "Humedad",
   "lightRain": "Llovizna",
   "lightSnow": "Nieve ligera",
   "mediumRain": "Lluvia",
@@ -39,5 +47,10 @@
   "smog": "Esmog",
   "sunny": "Despejado",
   "thunderstorm": "Tormenta",
-  "unknown": "No encontrado"
+  "unknown": "No encontrado",
+  "weekDay": "{date}",
+  "weekToday": "hoy",
+  "weekTomorrow": "mañana",
+  "weekWeek": "Semana",
+  "windSpeed": "Viento"
 }

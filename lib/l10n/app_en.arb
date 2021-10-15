@@ -18,6 +18,16 @@
       }
     }
   },
+  "@weekDay": {
+    "description": "Weekday",
+    "placeholders": {
+      "date": {
+        "format": "EEEE",
+        "type": "DateTime"
+      }
+    }
+  },
+  "airPressure": "Air Pressure",
   "appTitle": "Meta Weather",
   "cloudy": "Cloudy",
   "fog": "Fog",
@@ -27,6 +37,7 @@
   "heavySnow": "Heavy snow",
   "homepageLastUpdated": "Updated: {date}",
   "homepageSelectCityRequest": "Please, select a city",
+  "humidity": "Humidity",
   "lightRain": "Light rain",
   "lightSnow": "Light snow",
   "mediumRain": "Medium rain",
@@ -39,5 +50,10 @@
   "smog": "Smog",
   "sunny": "Sunny",
   "thunderstorm": "Thunderstorm",
-  "unknown": "unknown"
+  "unknown": "unknown",
+  "weekDay": "{date}",
+  "weekToday": "today",
+  "weekTomorrow": "tomorrow",
+  "weekWeek": "Week",
+  "windSpeed": "Wind"
 }
