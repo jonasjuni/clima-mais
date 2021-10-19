@@ -52,8 +52,8 @@
   "thunderstorm": "Thunderstorm",
   "unknown": "unknown",
   "weekDay": "{date}",
-  "weekToday": "today",
-  "weekTomorrow": "tomorrow",
+  "weekToday": "Today",
+  "weekTomorrow": "Tomorrow",
   "weekWeek": "Week",
   "windSpeed": "Wind"
 }
