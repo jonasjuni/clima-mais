@@ -1,10 +1,6 @@
 import 'dart:developer';
-import 'dart:ui';
-import 'package:bloc/bloc.dart';
-import 'package:hydrated_bloc/hydrated_bloc.dart';
-import 'package:clima_mais/repositories/repositories.dart';
 import 'package:flutter/material.dart';
-import 'package:meta/meta.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:clima_mais/settings/models/models.dart';
 
 part 'settings_event.dart';
