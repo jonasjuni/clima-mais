@@ -71,22 +71,3 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
     }
   }
 }
-
-extension WeatherXTemperature on WeatherForecast {
-  //Todo: fix temp covertion
-  double get farenheitTemp {
-    return _convertToFahrenheit(temp);
-  }
-
-  double get farenheitMaxTemp {
-    return _convertToFahrenheit(maxTemp);
-  }
-
-  double get farenheitMinTemp {
-    return _convertToFahrenheit(minTemp);
-  }
-
-  double _convertToFahrenheit(double celsius) {
-    return (celsius * 9 / 5) + 32;
-  }
-}

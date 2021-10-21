@@ -25,7 +25,9 @@ class WeatherView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: Drawer(), // Todo: drawer side menu
+      drawer: const Drawer(
+        child: SideMenu(),
+      ), // Todo: drawer side menu
       body: AnnotatedRegion<SystemUiOverlayStyle>(
         value: Theme.of(context)
                 .appBarTheme

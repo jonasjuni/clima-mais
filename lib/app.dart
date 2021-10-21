@@ -32,6 +32,8 @@ class ClimaMaisMaterial extends StatelessWidget {
     return MaterialApp(
       restorationScopeId: 'app',
       locale: null,
+      themeMode:
+          context.select((SettingsBloc bloc) => bloc.state.settings.themeMode),
       theme: ThemeData(
         primarySwatch: Colors.orange,
         appBarTheme:

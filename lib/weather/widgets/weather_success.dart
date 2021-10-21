@@ -224,7 +224,7 @@ class CurrentMainWeather extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Flexible(
-          child: Temperature(),
+          child: FirstColumn(),
         ),
         Flexible(
           child: ConditionAnimation(),
@@ -234,8 +234,8 @@ class CurrentMainWeather extends StatelessWidget {
   }
 }
 
-class Temperature extends StatelessWidget {
-  const Temperature({
+class FirstColumn extends StatelessWidget {
+  const FirstColumn({
     Key? key,
   }) : super(key: key);
 
@@ -261,17 +261,17 @@ class CurrentTemp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isImperial = context.select((SettingsBloc bloc) =>
+    final isFahrenheit = context.select((SettingsBloc bloc) =>
         bloc.state.settings.tempUnitSystem == TempUnitSystem.fahrenheit);
-    final temp = context.select<WeatherBloc, double>((WeatherBloc bloc) {
+    final temp = context.select<WeatherBloc, Temperature?>((WeatherBloc bloc) {
       final state = bloc.state;
       if (state is WeatherLoadSuccess) {
         return state.weather.weatherForecasts.first.temp;
       }
-      return 0;
     });
+    final currentTemp = isFahrenheit ? temp?.fahrenheit : temp?.celsius;
     return Text(
-      '${temp.round()}°',
+      '${currentTemp?.round()}°',
       style: Theme.of(context).textTheme.headline1,
     );
   }
@@ -302,6 +302,8 @@ class MinMaxTemperature extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isFahrenheit = context.select((SettingsBloc bloc) =>
+        bloc.state.settings.tempUnitSystem == TempUnitSystem.fahrenheit);
     final weatherForecast =
         context.select<WeatherBloc, WeatherForecast?>((WeatherBloc bloc) {
       final state = bloc.state;
@@ -309,15 +311,23 @@ class MinMaxTemperature extends StatelessWidget {
         return state.weather.weatherForecasts.first;
       }
     });
+
+    final maxTemp = isFahrenheit
+        ? weatherForecast?.maxTemp.fahrenheit
+        : weatherForecast?.maxTemp.celsius;
+
+    final minTemp = isFahrenheit
+        ? weatherForecast?.minTemp.fahrenheit
+        : weatherForecast?.minTemp.celsius;
     return Row(
       children: [
         Text(
-          '${weatherForecast?.maxTemp.round().toString()}°',
+          '${maxTemp?.round()}°',
           style: Theme.of(context).textTheme.subtitle2,
         ),
         Text(
-          '${weatherForecast?.minTemp.round().toString()}°',
-          style: Theme.of(context).textTheme.subtitle2,
+          '${minTemp?.round()}°',
+          style: Theme.of(context).textTheme.subtitle2, //Todo: style
         ),
       ],
     );
@@ -360,6 +370,9 @@ class WeatherUtilitsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isImperial = context.select((SettingsBloc bloc) =>
+        bloc.state.settings.lenghtUnit == LenghtUnit.imperial);
+
     final weatherState =
         context.select<WeatherBloc, WeatherForecast?>((WeatherBloc bloc) {
       final state = bloc.state;
@@ -367,6 +380,10 @@ class WeatherUtilitsWidget extends StatelessWidget {
         return state.weather.weatherForecasts.first;
       }
     });
+
+    final windSpeed = isImperial
+        ? '${weatherState?.windSpeed.imperial.round()} mph'
+        : '${weatherState?.windSpeed.metric.round()} km/h';
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(borderRadius),
@@ -385,7 +402,7 @@ class WeatherUtilitsWidget extends StatelessWidget {
             children: [
               Column(
                 children: [
-                  Text('${weatherState?.humidity}%'),
+                  Text('${weatherState?.humidity.round()}%'),
                   Text(AppLocalizations.of(context).humidity)
                 ],
               ),
@@ -398,9 +415,7 @@ class WeatherUtilitsWidget extends StatelessWidget {
               ),
               Column(
                 children: [
-                  Text(
-                      '${weatherState?.windSpeed.toStringAsFixed(1)} mph'), //Todo: localize
-
+                  Text(windSpeed),
                   Text(AppLocalizations.of(context).windSpeed),
                 ],
               ),
@@ -484,6 +499,17 @@ class WeeklyForecastItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isFahrenheit = context.select((SettingsBloc bloc) =>
+        bloc.state.settings.tempUnitSystem == TempUnitSystem.fahrenheit);
+
+    final maxTemp = isFahrenheit
+        ? weatherForecast?.maxTemp.fahrenheit
+        : weatherForecast?.maxTemp.celsius;
+
+    final minTemp = isFahrenheit
+        ? weatherForecast?.minTemp.fahrenheit
+        : weatherForecast?.minTemp.celsius;
+
     late String weekDay;
 
     switch (index) {
@@ -515,10 +541,8 @@ class WeeklyForecastItem extends StatelessWidget {
             ),
             //Todo: include icon
             Expanded(
-              flex: 0,
-              child: Text(
-                  '${weatherForecast?.maxTemp.round()}°/${weatherForecast?.minTemp.round()}°'),
-            ),
+                flex: 0,
+                child: Text('${maxTemp?.round()}°/${minTemp?.round()}°')),
           ],
         ),
       ),

@@ -73,6 +73,21 @@ const _dayConditionColors = {
   WeatherCondition.unknown: 0xffffd759
 };
 
+class Temperature {
+  final double celsius, fahrenheit;
+
+  Temperature.fromCelsius(this.celsius) : fahrenheit = (celsius * 9 / 5) + 32;
+  Temperature.fromfahrenheit(this.fahrenheit)
+      : celsius = (fahrenheit - 32) * 5 / 9;
+}
+
+class Speed {
+  final double metric, imperial;
+
+  Speed.fromImperial(this.imperial) : metric = imperial * 1.609344;
+  Speed.fromMetric(this.metric) : imperial = metric * 0.62137;
+}
+
 class WeatherForecast {
   WeatherForecast({
     required this.condition,
@@ -90,12 +105,12 @@ class WeatherForecast {
 
   final WeatherCondition condition;
   final String weatherStateName;
-  final double minTemp;
-  final double maxTemp;
-  final double temp;
+  final Temperature minTemp;
+  final Temperature maxTemp;
+  final Temperature temp;
   final double humidity;
   final double airPressure;
-  final double windSpeed;
+  final Speed windSpeed;
   final String windDirection;
   final DateTime created;
   final DateTime date;

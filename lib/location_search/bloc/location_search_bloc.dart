@@ -1,8 +1,8 @@
-import 'dart:async';
 import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:clima_mais/repositories/repositories.dart';
+import 'package:stream_transform/stream_transform.dart';
 import 'package:meta/meta.dart';
 
 part 'location_search_event.dart';
@@ -16,10 +16,29 @@ class LocationSearchBloc
     required WeatherRepository weatherRepository,
   })  : _weatherRepository = weatherRepository,
         super(LocationSearchInitial()) {
+    on<LocationSearchFetched>(
+      _onLocationSearchFetched,
+      transformer: debounce(const Duration(milliseconds: 2000)),
+    );
+
     on<LocationSearchQueryChanged>(_onLocationSearchQueryChanged);
-    on<LocationSearchByNameRequested>(_onSearchLocationByNameRequested);
+
     on<LocationSearchByCoordinatesRequested>(
         _onSearchLocationByCoordiantesRequested);
+
+    on<LocationSearchLocationSelected>(_onLocationSearchLocationSelected);
+  }
+
+  void _onLocationSearchFetched(
+      LocationSearchFetched event, Emitter<LocationSearchState> emit) async {
+    emit(const LocationFetchInProgess());
+    try {
+      final locations =
+          await _weatherRepository.getLocationIdByName(event.query);
+      emit(LocationFetchSuccess(locations: locations));
+    } on Exception catch (e) {
+      emit(LocationFetchFail(e: e));
+    }
   }
 
   void _onLocationSearchQueryChanged(LocationSearchQueryChanged event,
@@ -29,37 +48,17 @@ class LocationSearchBloc
     if (query.isEmpty) {
       emit(const LocationFetchSuccess(locations: []));
     } else {
-      emit(const LocationFetchInProgess());
       final userLocations = event.userLocations;
-
-      //First search on user saved location and physical location
+      //First search on usersaved locations and physical location
       final filtered =
           userLocations.where((element) => element.title.startsWith(query));
       if (filtered.isEmpty) {
-        try {
-          // final locations = await _weatherRepository.getLocationIdByName(value);
-          await Future.delayed(const Duration(seconds: 5));
-          const locations = [
-            Location('test', 1, Coordinates(123, 123), LocationType.fetched),
-            Location('test 2', 3, Coordinates(123, 123), LocationType.fetched),
-            Location('test 4', 5, Coordinates(123, 123), LocationType.fetched),
-          ];
-
-          emit(const LocationFetchSuccess(locations: locations));
-        } on Exception catch (e) {
-          emit(LocationFetchFail(e: e));
-        }
+        add(LocationSearchFetched(query: query, userLocations: userLocations));
       } else {
         emit(LocationFetchSuccess(locations: filtered.toList()));
       }
     }
-
     log(query);
-  }
-
-  void _onSearchLocationByNameRequested(LocationSearchByNameRequested event,
-      Emitter<LocationSearchState> emit) async {
-    log(event.query);
   }
 
   void _onSearchLocationByCoordiantesRequested(
@@ -68,23 +67,25 @@ class LocationSearchBloc
     emit(const LocationFetchInProgess());
     try {
       final coordinates = await _weatherRepository.getDeviceCoordinates();
-      final locations =
+      final fetchedLocations =
           await _weatherRepository.getLocationByCoordinates(coordinates);
-      if (locations.isEmpty) {
+      if (fetchedLocations.isEmpty) {
         //Todo: throw exception
         log('Location empty');
         return;
       }
       //Search for physical location
-      final index = event.userLocations.indexWhere(
-          (element) => element.locationType == LocationType.physical);
+      final index = event.userLocations.indexWhere((element) =>
+          element.locationType == LocationType.physical ||
+          fetchedLocations.first.woeid == element.woeid);
       List<Location> userLocations;
       if (index.isNegative) {
-        userLocations = event.userLocations.toList()..insert(0, locations[0]);
+        userLocations = event.userLocations.toList()
+          ..insert(0, fetchedLocations.first);
       } else {
         userLocations = event.userLocations.toList()
           ..removeAt(index)
-          ..insert(index, locations[0]);
+          ..insert(0, fetchedLocations.first);
       }
       emit(
         LocationAddSuccess(locations: userLocations),
@@ -93,4 +94,45 @@ class LocationSearchBloc
       emit(LocationFetchFail(e: e));
     }
   }
+
+  void _onLocationSearchLocationSelected(LocationSearchLocationSelected event,
+      Emitter<LocationSearchState> emit) async {
+    final selectedLocation = event.selectedLocation;
+    switch (event.selectedLocation.locationType) {
+      case LocationType.physical:
+        final index = event.userLocations.indexWhere(
+            (element) => element.locationType == LocationType.physical);
+        emit(LocationAddSuccess(
+            locations: event.userLocations.toList()
+              ..removeAt(index)
+              ..insert(0, selectedLocation)));
+
+        break;
+      case LocationType.saved:
+        final index = event.userLocations
+            .indexWhere((element) => element.woeid == selectedLocation.woeid);
+        emit(LocationAddSuccess(
+            locations: event.userLocations.toList()
+              ..removeAt(index)
+              ..insert(0, selectedLocation)));
+
+        break;
+      case LocationType.history:
+      case LocationType.fetched:
+        emit(LocationAddSuccess(
+            locations: event.userLocations.toList()
+              ..insert(
+                  0,
+                  selectedLocation.copyWith(
+                      locationType: LocationType.saved))));
+        break;
+    }
+  }
+}
+
+//Debounce query requests
+EventTransformer<E> debounce<E>(Duration duration) {
+  return (events, mapper) {
+    return events.debounce(duration).switchMap(mapper);
+  };
 }

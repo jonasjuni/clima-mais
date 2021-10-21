@@ -13,8 +13,9 @@ class SettingsInitial extends SettingsState {
           isUserFirstAccess: true,
           isPhysicalLocationEmpty: true,
           tempUnitSystem: TempUnitSystem.celsius,
-          distanceSystem: DistanceSystem.metric,
+          lenghtUnit: LenghtUnit.metric,
           userLocations: <Location>[],
+          themeMode: ThemeMode.system,
         ));
 
   const SettingsInitial.imperial()
@@ -22,11 +23,12 @@ class SettingsInitial extends SettingsState {
           isUserFirstAccess: true,
           isPhysicalLocationEmpty: true,
           tempUnitSystem: TempUnitSystem.fahrenheit,
-          distanceSystem: DistanceSystem.imperial,
+          lenghtUnit: LenghtUnit.imperial,
           userLocations: <Location>[],
+          themeMode: ThemeMode.system,
         ));
 }
 
-class SettingsInProgress extends SettingsState {
-  const SettingsInProgress(Settings settings) : super(settings);
+class SettingsLoadSuccess extends SettingsState {
+  const SettingsLoadSuccess(Settings settings) : super(settings);
 }

@@ -5,26 +5,22 @@ abstract class SettingsEvent {
   const SettingsEvent();
 }
 
-class ThemeBrightnessChanged extends SettingsEvent {
-  final Brightness themeBrightness;
-  const ThemeBrightnessChanged(this.themeBrightness);
+class SettingsThemeModeChanged extends SettingsEvent {
+  final ThemeMode themeMode;
+  const SettingsThemeModeChanged(this.themeMode);
 }
 
-class TempUnitChanged extends SettingsEvent {
+class SettingsTempUnitChanged extends SettingsEvent {
   final TempUnitSystem tempUnitSystem;
-  const TempUnitChanged(this.tempUnitSystem);
+  const SettingsTempUnitChanged(this.tempUnitSystem);
 }
 
-class DeviceLocationRequested extends SettingsEvent {
-  const DeviceLocationRequested();
+class SettingsLenghtUnitChanged extends SettingsEvent {
+  final LenghtUnit lenghtUnit;
+  const SettingsLenghtUnitChanged(this.lenghtUnit);
 }
 
-class DistanceSystemChanged extends SettingsEvent {
-  final DistanceSystem distanceSystem;
-  const DistanceSystemChanged(this.distanceSystem);
-}
-
-class LocaleChanged extends SettingsEvent {
+class SettingsLocaleChanged extends SettingsEvent {
   final Locale locale;
-  const LocaleChanged(this.locale);
+  const SettingsLocaleChanged(this.locale);
 }

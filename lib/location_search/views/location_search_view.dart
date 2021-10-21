@@ -40,17 +40,21 @@ class LocationSearchPage extends StatelessWidget {
                   //Todo: create my own search widget
                   clearQueryOnClose: false,
                   progress: isLoading,
-                  hint: 'Search available cities', //TODO: l10n
+                  hint: AppLocalizations.of(context).locationSearch,
                   isScrollControlled: true,
                   builder: (context, _) {
                     if (state is LocationFetchSuccess) {
                       return Container(
                         color: Theme.of(context).colorScheme.surface,
-                        child: Column(
-                          children: state.locations
-                              .map((e) =>
-                                  LocationItem(title: e.title, id: e.woeid))
-                              .toList(),
+                        child: Material(
+                          child: Column(
+                            children: state.locations
+                                .map((e) => LocationTile(
+                                      location: e,
+                                      userLocations: userLocations,
+                                    ))
+                                .toList(),
+                          ),
                         ),
                       );
                     }
@@ -58,7 +62,7 @@ class LocationSearchPage extends StatelessWidget {
                   },
                   onSubmitted: (value) => context
                       .read<LocationSearchBloc>()
-                      .add(LocationSearchByNameRequested(
+                      .add(LocationSearchQueryChanged(
                           query: value, userLocations: userLocations)),
                   onQueryChanged: (value) => context
                       .read<LocationSearchBloc>()
@@ -73,7 +77,8 @@ class LocationSearchPage extends StatelessWidget {
                             : () => context.read<LocationSearchBloc>().add(
                                 LocationSearchByCoordinatesRequested(
                                     userLocations: userLocations)),
-                        child: const Text('Use you location'), //TODO: l10n
+                        child: Text(
+                            AppLocalizations.of(context).locationSearchGPS),
                       ),
                     ],
                   ));
@@ -85,17 +90,35 @@ class LocationSearchPage extends StatelessWidget {
   }
 }
 
-class LocationItem extends StatelessWidget {
-  final String title;
-  final int id;
-
-  const LocationItem({Key? key, required this.title, required this.id})
+class LocationTile extends StatelessWidget {
+  const LocationTile(
+      {Key? key, required this.location, required this.userLocations})
       : super(key: key);
+
+  final Location location;
+  final List<Location> userLocations;
+
+  IconData _getIconData(LocationType locationType) {
+    switch (locationType) {
+      case LocationType.physical:
+        return Icons.location_on_outlined;
+      case LocationType.saved:
+        return Icons.bookmark_outlined;
+      case LocationType.history:
+        return Icons.history_outlined;
+      case LocationType.fetched:
+        return Icons.location_city_outlined;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(title),
+      leading: Icon(_getIconData(location.locationType)),
+      title: Text(location.title),
+      onTap: () => context.read<LocationSearchBloc>().add(
+          LocationSearchLocationSelected(
+              selectedLocation: location, userLocations: userLocations)),
     );
   }
 }

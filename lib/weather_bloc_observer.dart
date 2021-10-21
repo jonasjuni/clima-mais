@@ -12,7 +12,7 @@ class ClimaMaisBlocObserver extends BlocObserver {
   @override
   void onTransition(Bloc bloc, Transition transition) {
     super.onTransition(bloc, transition);
-    // log('${bloc.runtimeType} $transition!!');
+    log('${bloc.runtimeType} $transition!!');
   }
 
   @override
