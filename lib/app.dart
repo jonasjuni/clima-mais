@@ -8,22 +8,27 @@ import 'package:clima_mais/settings/bloc/settings_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ClimaMaisApp extends StatelessWidget {
-  final WeatherRepository weatherRepository;
-  const ClimaMaisApp({Key? key, required this.weatherRepository})
+  const ClimaMaisApp(
+      {Key? key, required this.settingsBloc, required this.weatherRepository})
       : super(key: key);
+
+  final SettingsBloc settingsBloc;
+  final WeatherRepository weatherRepository;
+
   @override
   Widget build(BuildContext context) {
     return RepositoryProvider.value(
       value: weatherRepository,
-      child: BlocProvider(
-          create: (_) => SettingsBloc(weatherRepository: weatherRepository),
-          child: const ClimaMaisMaterial()),
+      child: BlocProvider.value(
+        value: settingsBloc,
+        child: const ClimaMaisPage(),
+      ),
     );
   }
 }
 
-class ClimaMaisMaterial extends StatelessWidget {
-  const ClimaMaisMaterial({
+class ClimaMaisPage extends StatelessWidget {
+  const ClimaMaisPage({
     Key? key,
   }) : super(key: key);
 

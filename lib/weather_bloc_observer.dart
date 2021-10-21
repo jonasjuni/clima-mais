@@ -6,24 +6,30 @@ class ClimaMaisBlocObserver extends BlocObserver {
   @override
   void onChange(BlocBase bloc, Change change) {
     super.onChange(bloc, change);
-    // log('${bloc.runtimeType}: $change');
+    log('${bloc.runtimeType}: $change');
   }
 
   @override
-  void onTransition(Bloc bloc, Transition transition) {
-    super.onTransition(bloc, transition);
-    log('${bloc.runtimeType} $transition!!');
+  void onEvent(Bloc bloc, Object? event) {
+    super.onEvent(bloc, event);
+    log('${bloc.runtimeType} EVENT: $event');
   }
 
-  @override
-  void onError(BlocBase bloc, Object error, StackTrace stackTrace) {
-    super.onError(bloc, error, stackTrace);
-    // log('Error: ${bloc.runtimeType} $error!!');
-  }
+  // @override
+  // void onTransition(Bloc bloc, Transition transition) {
+  //   super.onTransition(bloc, transition);
+  //   log('${bloc.runtimeType} $transition!!');
+  // }
 
-  @override
-  void onClose(BlocBase bloc) {
-    super.onClose(bloc);
-    // log('${bloc.runtimeType} CLosed!!');
-  }
+  // @override
+  // void onError(BlocBase bloc, Object error, StackTrace stackTrace) {
+  //   super.onError(bloc, error, stackTrace);
+  //   // log('Error: ${bloc.runtimeType} $error!!');
+  // }
+
+  // @override
+  // void onClose(BlocBase bloc) {
+  //   super.onClose(bloc);
+  //   // log('${bloc.runtimeType} CLosed!!');
+  // }
 }

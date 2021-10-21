@@ -1,12 +1,21 @@
 import 'package:clima_mais/app.dart';
 import 'package:clima_mais/repositories/repositories.dart';
+import 'package:clima_mais/settings/bloc/settings_bloc.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:clima_mais/weather_bloc_observer.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'package:meta_weather/meta_weather.dart';
 
-void main() {
+void main() async {
+  Bloc.observer = ClimaMaisBlocObserver();
+  WidgetsFlutterBinding.ensureInitialized();
+  HydratedBloc.storage = await HydratedStorage.build(
+    storageDirectory: await getTemporaryDirectory(),
+  );
+
+  final settingsBloc = SettingsBloc();
   final httpClient = http.Client();
   final weatherRepository = MetaWeatherRepository(
     weatherApiClient: WeatherApiClient(
@@ -14,8 +23,8 @@ void main() {
     ),
   );
 
-  Bloc.observer = ClimaMaisBlocObserver();
   runApp(ClimaMaisApp(
+    settingsBloc: settingsBloc,
     weatherRepository: weatherRepository,
   ));
 }

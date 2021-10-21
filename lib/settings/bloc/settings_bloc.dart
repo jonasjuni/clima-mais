@@ -1,5 +1,7 @@
+import 'dart:developer';
 import 'dart:ui';
 import 'package:bloc/bloc.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:clima_mais/repositories/repositories.dart';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
@@ -8,16 +10,13 @@ import 'package:clima_mais/settings/models/models.dart';
 part 'settings_event.dart';
 part 'settings_state.dart';
 
-class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
-  SettingsBloc({required WeatherRepository weatherRepository})
-      : _weatherRepository = weatherRepository,
-        super(_metric) {
+class SettingsBloc extends HydratedBloc<SettingsEvent, SettingsState> {
+  SettingsBloc() : super(_metric) {
     on<SettingsTempUnitChanged>(_onTempUnitChanged);
     on<SettingsLenghtUnitChanged>(_onLenghtUnitChanged);
     on<SettingsThemeModeChanged>(_onThemeModeChanged);
     on<SettingsLocaleChanged>(_onLocaleChanged);
   }
-  final WeatherRepository _weatherRepository;
   //Todo: automatic detect region
   static const _imperialsLocations = [
     'en_US',
@@ -55,5 +54,21 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
       SettingsLocaleChanged event, Emitter<SettingsState> emit) {
     final settings = state.settings.copyWith(locale: event.locale);
     emit(SettingsLoadSuccess(settings));
+  }
+
+  //Persistence
+  @override
+  SettingsState? fromJson(Map<String, dynamic> json) {
+    log('Hydrated Loading');
+
+    return SettingsLoadSuccess(Settings.fromJson(json));
+  }
+
+  @override
+  Map<String, dynamic>? toJson(SettingsState state) {
+    if (state is SettingsLoadSuccess) {
+      log('Hydrated Saving');
+      return state.settings.toJson();
+    }
   }
 }
