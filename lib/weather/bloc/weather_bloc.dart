@@ -12,12 +12,12 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
       : _weatherRepository = weatherRepository,
         super(const WeatherInitial()) {
     // New bloc API
-    on<WeatherRequested>(_onWeatherRequested);
-    on<WeatherRefreshed>(_onWeatherRefreshed);
+    on<WeatherFetchRequested>(_onWeatherRequested);
+    on<WeatherDataRefreshed>(_onWeatherRefreshed);
   }
 
   void _onWeatherRequested(
-      WeatherRequested event, Emitter<WeatherState> emit) async {
+      WeatherFetchRequested event, Emitter<WeatherState> emit) async {
     emit(const WeatherLoadInProgress());
     final locations = event.locations;
     try {
@@ -31,7 +31,7 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
   }
 
   void _onWeatherRefreshed(
-      WeatherRefreshed event, Emitter<WeatherState> emit) async {
+      WeatherDataRefreshed event, Emitter<WeatherState> emit) async {
     final currentState = state;
 
     if (currentState is WeatherLoadSuccess) {

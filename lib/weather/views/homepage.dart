@@ -13,7 +13,7 @@ class WeatherHomePage extends StatelessWidget {
     return BlocProvider(
       create: (context) {
         return WeatherBloc(weatherRepository: context.read<WeatherRepository>())
-          ..add(const WeatherRefreshed());
+          ..add(const WeatherDataRefreshed());
       },
       child: const WeatherView(),
     );

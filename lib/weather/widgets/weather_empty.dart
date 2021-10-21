@@ -31,7 +31,7 @@ class WeatherEmpty extends StatelessWidget {
                 } else {
                   context
                       .read<WeatherBloc>()
-                      .add(WeatherRequested(locations: result));
+                      .add(WeatherFetchRequested(locations: result));
                 }
               }),
           Text(AppLocalizations.of(context).homepageSelectCityRequest),

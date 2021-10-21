@@ -27,7 +27,7 @@ class WeatherSuccess extends StatelessWidget {
     return RefreshIndicator(
       onRefresh: () {
         final bloc = context.read<WeatherBloc>();
-        bloc.add(const WeatherRefreshed());
+        bloc.add(const WeatherDataRefreshed());
 
         return bloc.stream.firstWhere((element) => true);
       },
@@ -146,7 +146,7 @@ class ActionsMenu extends StatelessWidget {
               LocationSearchPage(userLocations: state.locations)),
     );
     if (result != null) {
-      context.read<WeatherBloc>().add(WeatherRequested(locations: result));
+      context.read<WeatherBloc>().add(WeatherFetchRequested(locations: result));
     }
   }
 

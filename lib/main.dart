@@ -10,11 +10,12 @@ import 'package:meta_weather/meta_weather.dart';
 
 void main() async {
   Bloc.observer = ClimaMaisBlocObserver();
+  //init storage
   WidgetsFlutterBinding.ensureInitialized();
   HydratedBloc.storage = await HydratedStorage.build(
     storageDirectory: await getTemporaryDirectory(),
   );
-
+  // init deps
   final settingsBloc = SettingsBloc();
   final httpClient = http.Client();
   final weatherRepository = MetaWeatherRepository(
