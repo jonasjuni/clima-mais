@@ -28,6 +28,9 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+        <!-- Google Maps -->
+        <meta-data android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBgFybLy5Qcjc2vZpRog4RX4vC8_-uRooM"/>
     </application>
         <!-- Location Permission -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
