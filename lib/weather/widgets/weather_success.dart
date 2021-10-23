@@ -61,7 +61,10 @@ class WeatherSuccess extends StatelessWidget {
                     ),
                   ],
                 ),
+                SizedBox(height: 50),
+                WeekTempsChart(),
                 WeeklyForecastList(),
+                SizedBox(height: 50),
               ],
             ),
           ),
@@ -467,16 +470,13 @@ class WeeklyForecastList extends StatelessWidget {
 
     return Container(
         color: Theme.of(context).colorScheme.surface,
-        margin: const EdgeInsets.symmetric(vertical: kVerticalSpacing * 6),
+        // margin: const EdgeInsets.symmetric(vertical: kVerticalSpacing * 6),
         padding: const EdgeInsets.symmetric(
             vertical: kVerticalSpacing * 2, horizontal: kLateralPadding),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              AppLocalizations.of(context).weekWeek,
-              style: Theme.of(context).textTheme.headline6,
-            ), //Todo: l10n
+            //Todo: l10n
             ...List.generate(
                 weatherForecastList?.length ?? 0,
                 (index) => WeeklyForecastItem(

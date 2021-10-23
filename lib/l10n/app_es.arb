@@ -24,6 +24,13 @@
       }
     }
   },
+  "@weekDayAbbr": {
+    "placeholders": {
+      "date": {
+        "type": "DateTime"
+      }
+    }
+  },
   "airPressure": "Presión Atmosférica",
   "appTitle": "Meta Tiempo",
   "cloudy": "Cubierto",
@@ -59,6 +66,7 @@
   "thunderstorm": "Tormenta",
   "unknown": "No encontrado",
   "weekDay": "{date}",
+  "weekDayAbbr": "{date}",
   "weekToday": "hoy",
   "weekTomorrow": "mañana",
   "weekWeek": "Semana",

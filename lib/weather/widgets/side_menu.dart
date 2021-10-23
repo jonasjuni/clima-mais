@@ -29,10 +29,13 @@ class TopMenu extends StatelessWidget {
             onPressed: () => Navigator.pop(context),
             icon: const Icon(Icons.close)),
         IconButton(
-          onPressed: () => Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const SettingsPage()),
-          ),
+          onPressed: () {
+            Navigator.pop(context);
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const SettingsPage()),
+            );
+          },
           icon: const Icon(Icons.settings),
         ),
       ],

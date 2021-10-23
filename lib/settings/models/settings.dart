@@ -38,6 +38,12 @@ class Settings {
     );
   }
 
+  bool get isFahrenheit => tempUnitSystem == TempUnitSystem.fahrenheit;
+  bool get isCelsius => tempUnitSystem == TempUnitSystem.celsius;
+
+  bool get isImperial => lenghtUnit == LenghtUnit.imperial;
+  bool get isMetric => lenghtUnit == LenghtUnit.metric;
+
   factory Settings.fromJson(Map<String, dynamic> json) =>
       _$SettingsFromJson(json);
 

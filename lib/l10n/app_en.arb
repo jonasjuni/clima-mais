@@ -27,6 +27,14 @@
       }
     }
   },
+  "@weekDayAbbr": {
+    "placeholders": {
+      "date": {
+        "format": "E",
+        "type": "DateTime"
+      }
+    }
+  },
   "airPressure": "Air Pressure",
   "appTitle": "Meta Weather",
   "cloudy": "Cloudy",
@@ -62,6 +70,7 @@
   "thunderstorm": "Thunderstorm",
   "unknown": "unknown",
   "weekDay": "{date}",
+  "weekDayAbbr": "{date}",
   "weekToday": "Today",
   "weekTomorrow": "Tomorrow",
   "weekWeek": "Week",
