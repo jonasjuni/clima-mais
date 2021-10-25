@@ -74,6 +74,7 @@ flutter:
   #   - images/a_dot_ham.jpeg
   assets:
     - assets/animations/weather/
+    - assets/maps/
     - assets/icons/
     - assets/images/background/
 

@@ -30,16 +30,16 @@ const kChartPadding = 20.0;
 
 const barColorsList = [kHumidityColors, kTempColors, kWindColors];
 
-class WeekTempsChart extends StatefulWidget {
-  const WeekTempsChart({
+class DatllyForecastChart extends StatefulWidget {
+  const DatllyForecastChart({
     Key? key,
   }) : super(key: key);
 
   @override
-  State<WeekTempsChart> createState() => _WeekTempsChartState();
+  State<DatllyForecastChart> createState() => _DatllyForecastChartState();
 }
 
-class _WeekTempsChartState extends State<WeekTempsChart> {
+class _DatllyForecastChartState extends State<DatllyForecastChart> {
   var _selectedIndex = 1;
 
   void _selectIndex(int index) {
