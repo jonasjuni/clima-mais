@@ -1,15 +1,15 @@
 import 'dart:developer';
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:lottie/lottie.dart';
+
 import 'package:clima_mais/settings/settings.dart';
 import 'package:clima_mais/location_search/location_search.dart';
 import 'package:clima_mais/weather/weather.dart';
 import 'package:clima_mais/repositories/repositories.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:lottie/lottie.dart';
 
 const kVerticalSpacing = 8.0;
 const kLateralPadding = 16.0;
@@ -19,11 +19,6 @@ class WeatherSuccess extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final mediaQuery = MediaQuery.of(context);
-    final viewPortheight = mediaQuery.size.height;
-    final topSafeHeight = mediaQuery.size.height - mediaQuery.padding.top;
-    final safeHeight =
-        viewPortheight - mediaQuery.padding.top - mediaQuery.padding.bottom;
     return RefreshIndicator(
       onRefresh: () {
         final bloc = context.read<WeatherBloc>();
@@ -35,41 +30,83 @@ class WeatherSuccess extends StatelessWidget {
         slivers: [
           StatusBarHack(),
           SliverList(
+            //Lazy build area
             delegate: SliverChildListDelegate.fixed(
               [
-                Stack(
-                  children: [
-                    DynamicBackground(height: topSafeHeight),
-                    ConstrainedBox(
-                      constraints: BoxConstraints(maxHeight: safeHeight),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: kLateralPadding),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            ActionsMenu(),
-                            WeatherTitle(),
-                            WeatherSubtitle(),
-                            CurrentMainWeather(),
-                            Spacer(),
-                            WeatherUtilitsWidget(),
-                            WeatherLastUpdated(),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
+                WeatherCorver(),
+                // SizedBox(height: 50),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 50.0, horizontal: kLateralPadding),
+                  child: Text(
+                    'Daily',
+                    style: Theme.of(context).textTheme.headline5,
+                  ),
                 ),
-                SizedBox(height: 50),
-                WeekTempsChart(),
-                WeeklyForecastList(),
-                SizedBox(height: 50),
+                DatllyForecastChart(),
+                DailyForecastList(),
+                SizedBox(
+                  height: 20,
+                )
+              ],
+            ),
+          ),
+          SliverToBoxAdapter(
+            //Map must be keept alive
+            child: Column(
+              children: [
+                Container(
+                    alignment: Alignment.centerLeft,
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 40.0, horizontal: kLateralPadding),
+                    child: Text('Area Map',
+                        style: Theme.of(context).textTheme.headline5)),
+                LocatioMap(),
+                LocationDetails(),
+                Footer(),
               ],
             ),
           ),
         ],
       ),
+    );
+  }
+}
+
+class WeatherCorver extends StatelessWidget {
+  const WeatherCorver({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
+    final viewPortheight = mediaQuery.size.height;
+    final topSafeHeight = mediaQuery.size.height - mediaQuery.padding.top;
+    final safeHeight =
+        viewPortheight - mediaQuery.padding.top - mediaQuery.padding.bottom;
+    return Stack(
+      children: [
+        DynamicBackground(height: topSafeHeight),
+        ConstrainedBox(
+          constraints: BoxConstraints(maxHeight: safeHeight),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: kLateralPadding),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ActionsMenu(),
+                WeatherTitle(),
+                WeatherSubtitle(),
+                CurrentMainWeather(),
+                Spacer(),
+                WeatherUtilitsWidget(),
+                WeatherLastUpdated(),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -453,8 +490,8 @@ class WeatherLastUpdated extends StatelessWidget {
   }
 }
 
-class WeeklyForecastList extends StatelessWidget {
-  const WeeklyForecastList({
+class DailyForecastList extends StatelessWidget {
+  const DailyForecastList({
     Key? key,
   }) : super(key: key);
 
@@ -479,7 +516,7 @@ class WeeklyForecastList extends StatelessWidget {
             //Todo: l10n
             ...List.generate(
                 weatherForecastList?.length ?? 0,
-                (index) => WeeklyForecastItem(
+                (index) => DailyForecastItem(
                       index: index,
                       weatherForecast: weatherForecastList?[index],
                     ))
@@ -488,8 +525,8 @@ class WeeklyForecastList extends StatelessWidget {
   }
 }
 
-class WeeklyForecastItem extends StatelessWidget {
-  const WeeklyForecastItem({
+class DailyForecastItem extends StatelessWidget {
+  const DailyForecastItem({
     Key? key,
     required this.weatherForecast,
     required this.index,
@@ -546,6 +583,97 @@ class WeeklyForecastItem extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class LocationDetails extends StatelessWidget {
+  const LocationDetails({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final weather = context.select((WeatherBloc bloc) {
+      final state = bloc.state;
+      if (state is WeatherLoadSuccess) {
+        return state.weather;
+      }
+    });
+    return Container(
+      height: 250,
+      alignment: Alignment.center,
+      padding: const EdgeInsets.symmetric(
+          vertical: 8.0, horizontal: kLateralPadding),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    children: [
+                      Text('Sunrise'),
+                      Text('${weather?.sunRise.hour}:35')
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Column(
+                    children: [
+                      Text('Sunset'),
+                      Text('${weather?.sunSet.hour}:00')
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Expanded(
+                  child: Column(
+                    children: [
+                      Text('wind_direction'),
+                      Text('${weather?.sunRise.hour}')
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Column(
+                    children: [
+                      Text('visibility'),
+                      Text('${weather?.sunSet.hour}')
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Column(
+              children: [Text('predictability'), Text('25%')],
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class Footer extends StatelessWidget {
+  const Footer({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      alignment: Alignment.centerLeft,
+      padding: EdgeInsets.symmetric(vertical: 8),
+      child: Text('Data from MetaWeather'),
     );
   }
 }
