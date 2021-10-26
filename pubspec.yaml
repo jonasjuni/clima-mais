@@ -47,6 +47,7 @@ dependencies:
   path_provider: ^2.0.5
   fl_chart: ^0.40.2
   google_maps_flutter: ^2.0.11
+  timezone: ^0.8.0
     
 dev_dependencies:
   build_runner: ^2.1.2

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:clima_mais/theme.dart';
 import 'package:clima_mais/weather/weather.dart';
 import 'package:clima_mais/settings/settings.dart';
 import 'package:clima_mais/repositories/repositories.dart';
@@ -25,8 +26,6 @@ const kWindColors = [
   Color(0xFFae8b9c),
   Color(0x10ae8b9c),
 ];
-
-const kChartPadding = 20.0;
 
 const barColorsList = [kHumidityColors, kTempColors, kWindColors];
 
@@ -85,13 +84,13 @@ class _DatllyForecastChartState extends State<DatllyForecastChart> {
     final unitList = ['%', '°', isImperial ? ' mph' : ' km/h'];
 
     return Container(
-      // color: Colors.teal,
-      padding: const EdgeInsets.symmetric(
-          vertical: 2, horizontal: 16), //Todo: add constant padding
+      padding: const EdgeInsets.symmetric(horizontal: kLateralPadding),
       child: Column(
         children: [
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16), //lable cliping
+            margin: const EdgeInsets.only(top: Insets.small),
+            padding: const EdgeInsets.symmetric(
+                horizontal: Insets.medium), //lable cliping
             width: double.infinity,
             height: 200,
             child: LineChart(
@@ -112,7 +111,7 @@ class _DatllyForecastChartState extends State<DatllyForecastChart> {
                         .textTheme
                         .bodyText1
                         ?.copyWith(fontWeight: FontWeight.bold),
-                    margin: kChartPadding,
+                    margin: Insets.medium,
 
                     getTitles: (index) => AppLocalizations.of(context)
                         .weekDayAbbr(weatherForecasts[index.toInt()]
@@ -147,24 +146,29 @@ class _DatllyForecastChartState extends State<DatllyForecastChart> {
             ),
           ),
           Container(
-            padding: const EdgeInsets.symmetric(vertical: kChartPadding),
+            padding: const EdgeInsets.symmetric(vertical: Insets.medium),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                ChoiceChip(
-                  label: Text(AppLocalizations.of(context).humidity),
-                  selected: _selectedIndex == 0,
-                  onSelected: (value) => _selectIndex(0),
+                Expanded(
+                  child: ChoiceChip(
+                    label: Text(AppLocalizations.of(context).humidity),
+                    selected: _selectedIndex == 0,
+                    onSelected: (value) => _selectIndex(0),
+                  ),
                 ),
-                ChoiceChip(
-                  label: Text(AppLocalizations.of(context).settingsTemp),
-                  selected: _selectedIndex == 1,
-                  onSelected: (value) => _selectIndex(1),
+                Expanded(
+                  child: ChoiceChip(
+                    label: Text(AppLocalizations.of(context).settingsTemp),
+                    selected: _selectedIndex == 1,
+                    onSelected: (value) => _selectIndex(1),
+                  ),
                 ),
-                ChoiceChip(
-                  label: Text(AppLocalizations.of(context).windSpeed),
-                  selected: _selectedIndex == 2,
-                  onSelected: (value) => _selectIndex(2),
+                Expanded(
+                  child: ChoiceChip(
+                    label: Text(AppLocalizations.of(context).windSpeed),
+                    selected: _selectedIndex == 2,
+                    onSelected: (value) => _selectIndex(2),
+                  ),
                 ),
               ],
             ),

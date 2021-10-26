@@ -16,6 +16,13 @@
       }
     }
   },
+  "@hourMinute": {
+    "placeholders": {
+      "date": {
+        "type": "DateTime"
+      }
+    }
+  },
   "@weekDay": {
     "description": "Dia da Semana",
     "placeholders": {
@@ -34,6 +41,7 @@
   "airPressure": "Presión Atmosférica",
   "appTitle": "Meta Tiempo",
   "cloudy": "Cubierto",
+  "dataFrom": "Fuente",
   "fog": "Neblina",
   "forecastDate": "{date}",
   "hail": "Granizo",
@@ -41,6 +49,7 @@
   "heavySnow": "Fuertes nevadas",
   "homepageLastUpdated": "Actualizado: {date}",
   "homepageSelectCityRequest": "Por favor, Seleccione una ciudad",
+  "hourMinute": "{date}",
   "humidity": "Humedad",
   "lightRain": "Llovizna",
   "lightSnow": "Nieve ligera",
@@ -49,6 +58,7 @@
   "mediumRain": "Lluvia",
   "mediumSnow": "Nieve",
   "partlyCloudy": "Intervalos nubosos",
+  "predictability": "Previsibilidad",
   "selectCityFormCity": "Ciudad",
   "selectCityNotSupported": "Ciudad no soportada",
   "settingsTemp": "Temperatura",
@@ -62,13 +72,17 @@
   "showers": "Chubasco",
   "sleet": "Aguanieve",
   "smog": "Esmog",
+  "sunRise": "Amanecer",
+  "sunSet": "Atardecer ",
   "sunny": "Despejado",
   "thunderstorm": "Tormenta",
   "unknown": "No encontrado",
+  "visibility": "Visibilidad",
   "weekDay": "{date}",
   "weekDayAbbr": "{date}",
   "weekToday": "hoy",
   "weekTomorrow": "mañana",
   "weekWeek": "Semana",
+  "windDirection": "Dirección del viento",
   "windSpeed": "Viento"
 }

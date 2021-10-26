@@ -8,7 +8,10 @@ import 'package:clima_mais/bloc_observer.dart';
 import 'package:http/http.dart' as http;
 import 'package:meta_weather/meta_weather.dart';
 
+import 'package:timezone/data/latest_10y.dart' as tz;
+
 void main() async {
+  tz.initializeTimeZones();
   Bloc.observer = ClimaMaisBlocObserver();
   //init storage
   WidgetsFlutterBinding.ensureInitialized();

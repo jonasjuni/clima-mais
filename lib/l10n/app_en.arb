@@ -18,6 +18,14 @@
       }
     }
   },
+  "@hourMinute": {
+    "placeholders": {
+      "date": {
+        "format": "jm",
+        "type": "DateTime"
+      }
+    }
+  },
   "@weekDay": {
     "description": "Weekday",
     "placeholders": {
@@ -38,6 +46,7 @@
   "airPressure": "Air Pressure",
   "appTitle": "Meta Weather",
   "cloudy": "Cloudy",
+  "dataFrom": "Data from",
   "fog": "Fog",
   "forecastDate": "{date}",
   "hail": "Hail",
@@ -45,6 +54,7 @@
   "heavySnow": "Heavy snow",
   "homepageLastUpdated": "Updated: {date}",
   "homepageSelectCityRequest": "Please, select a city",
+  "hourMinute": "{date}",
   "humidity": "Humidity",
   "lightRain": "Light rain",
   "lightSnow": "Light snow",
@@ -53,6 +63,7 @@
   "mediumRain": "Medium rain",
   "mediumSnow": "Medium Snow",
   "partlyCloudy": "Mostly Cloudy",
+  "predictability": "Predictability",
   "selectCityFormCity": "City",
   "selectCityNotSupported": "City not supported",
   "settingsTemp": "Temperature",
@@ -66,13 +77,17 @@
   "showers": "Showers",
   "sleet": "Sleet",
   "smog": "Smog",
+  "sunRise": "Sunrise",
+  "sunSet": "Sunset",
   "sunny": "Sunny",
   "thunderstorm": "Thunderstorm",
   "unknown": "unknown",
+  "visibility": "Visibility",
   "weekDay": "{date}",
   "weekDayAbbr": "{date}",
   "weekToday": "Today",
   "weekTomorrow": "Tomorrow",
   "weekWeek": "Week",
+  "windDirection": "Wind Direction",
   "windSpeed": "Wind"
 }
