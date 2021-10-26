@@ -13,3 +13,25 @@ class WeatherFetchRequested extends WeatherEvent {
 class WeatherDataRefreshed extends WeatherEvent {
   const WeatherDataRefreshed();
 }
+
+class WeatherLocationOrderChanged extends WeatherEvent {
+  const WeatherLocationOrderChanged(
+      {required this.oldIndex,
+      required this.newIndex,
+      required this.locations});
+
+  final int oldIndex, newIndex;
+  final List<Location> locations;
+}
+
+class WeatherLocationDeleted extends WeatherEvent {
+  const WeatherLocationDeleted({required this.index, required this.locations});
+  final int index;
+  final List<Location> locations;
+}
+
+class WeatherLocationSelected extends WeatherEvent {
+  const WeatherLocationSelected({required this.index, required this.locations});
+  final int index;
+  final List<Location> locations;
+}

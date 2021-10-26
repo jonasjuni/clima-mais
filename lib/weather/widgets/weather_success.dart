@@ -189,6 +189,13 @@ class ActionsMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final locationsLenght = context.select((WeatherBloc bloc) {
+      final state = bloc.state;
+      if (state is WeatherLoadSuccess) {
+        return state.locations.length;
+      }
+      return 0;
+    });
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -197,7 +204,7 @@ class ActionsMenu extends StatelessWidget {
           icon: Icon(Icons.menu),
         ),
         IconButton(
-          onPressed: () => _onpressed(context),
+          onPressed: locationsLenght < 5 ? () => _onpressed(context) : null,
           icon: Icon(
             Icons.add,
           ),

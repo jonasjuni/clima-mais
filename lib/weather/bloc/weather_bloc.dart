@@ -14,6 +14,7 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
     // New bloc API
     on<WeatherFetchRequested>(_onWeatherRequested);
     on<WeatherDataRefreshed>(_onWeatherRefreshed);
+    on<WeatherLocationOrderChanged>(_onWeatherLocationOrderChanged);
   }
 
   void _onWeatherRequested(
@@ -52,6 +53,28 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
         emit(WeatherLoadSuccess(weather: weather, locations: locations));
       } on Exception catch (e) {
         emit(WeatherLoadFailure(exception: e, locations: locations));
+      }
+    }
+  }
+
+  void _onWeatherLocationOrderChanged(
+      WeatherLocationOrderChanged event, Emitter<WeatherState> emit) async {
+    final currentState = state;
+    var newIndex = event.newIndex;
+    final oldIndex = event.oldIndex;
+    if (newIndex > oldIndex) {
+      newIndex--;
+    }
+    if (currentState is WeatherLoadSuccess) {
+      final orderedList = event.locations.toList()
+        ..removeAt(oldIndex)
+        ..insert(newIndex, event.locations[oldIndex]);
+
+      emit(WeatherLoadSuccess(
+          weather: currentState.weather, locations: orderedList));
+
+      if (oldIndex == 0 || newIndex == 0) {
+        add(const WeatherDataRefreshed());
       }
     }
   }
