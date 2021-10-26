@@ -5,14 +5,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lottie/lottie.dart';
+import 'package:timezone/timezone.dart' as tz;
 
 import 'package:clima_mais/settings/settings.dart';
 import 'package:clima_mais/location_search/location_search.dart';
 import 'package:clima_mais/weather/weather.dart';
 import 'package:clima_mais/repositories/repositories.dart';
-
-const kVerticalSpacing = 8.0;
-const kLateralPadding = 16.0;
+import 'package:clima_mais/theme.dart';
 
 class WeatherSuccess extends StatelessWidget {
   const WeatherSuccess({Key? key}) : super(key: key);
@@ -34,20 +33,17 @@ class WeatherSuccess extends StatelessWidget {
             delegate: SliverChildListDelegate.fixed(
               [
                 WeatherCorver(),
-                // SizedBox(height: 50),
+                SizedBox(height: Insets.xlarge),
                 Padding(
                   padding: const EdgeInsets.symmetric(
-                      vertical: 50.0, horizontal: kLateralPadding),
+                      vertical: Insets.medium, horizontal: kLateralPadding),
                   child: Text(
-                    'Daily',
-                    style: Theme.of(context).textTheme.headline5,
-                  ),
+                    'Daily Forecast', //Todo: localizate
+                    style: Theme.of(context).textTheme.headline6,
+                  ), //Todo: l10n
                 ),
                 DatllyForecastChart(),
                 DailyForecastList(),
-                SizedBox(
-                  height: 20,
-                )
               ],
             ),
           ),
@@ -55,12 +51,13 @@ class WeatherSuccess extends StatelessWidget {
             //Map must be keept alive
             child: Column(
               children: [
+                SizedBox(height: Insets.xlarge),
                 Container(
                     alignment: Alignment.centerLeft,
                     padding: const EdgeInsets.symmetric(
-                        vertical: 40.0, horizontal: kLateralPadding),
+                        vertical: Insets.medium, horizontal: kLateralPadding),
                     child: Text('Area Map',
-                        style: Theme.of(context).textTheme.headline5)),
+                        style: Theme.of(context).textTheme.headline6)),
                 LocatioMap(),
                 LocationDetails(),
                 Footer(),
@@ -430,7 +427,7 @@ class WeatherUtilitsWidget extends StatelessWidget {
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
         child: Container(
-          padding: const EdgeInsets.symmetric(vertical: kVerticalSpacing * 4),
+          padding: const EdgeInsets.symmetric(vertical: Insets.large),
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.surface.withAlpha(30),
             border:
@@ -438,26 +435,31 @@ class WeatherUtilitsWidget extends StatelessWidget {
             borderRadius: BorderRadius.circular(borderRadius),
           ),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              Column(
-                children: [
-                  Text('${weatherState?.humidity.round()}%'),
-                  Text(AppLocalizations.of(context).humidity)
-                ],
+              Expanded(
+                child: Column(
+                  children: [
+                    Text('${weatherState?.humidity.round()}%'),
+                    Text(AppLocalizations.of(context).humidity)
+                  ],
+                ),
               ),
-              Column(
-                children: [
-                  Text('${weatherState?.airPressure.toStringAsFixed(1)} mb'),
-                  Text(AppLocalizations.of(context)
-                      .airPressure), //Todo: Localize
-                ],
+              Expanded(
+                child: Column(
+                  children: [
+                    Text('${weatherState?.airPressure.toStringAsFixed(1)} mb'),
+                    Text(AppLocalizations.of(context)
+                        .airPressure), //Todo: Localize
+                  ],
+                ),
               ),
-              Column(
-                children: [
-                  Text(windSpeed),
-                  Text(AppLocalizations.of(context).windSpeed),
-                ],
+              Expanded(
+                child: Column(
+                  children: [
+                    Text(windSpeed),
+                    Text(AppLocalizations.of(context).windSpeed),
+                  ],
+                ),
               ),
             ],
           ),
@@ -481,7 +483,7 @@ class WeatherLastUpdated extends StatelessWidget {
       }
     });
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: kVerticalSpacing * 4),
+      padding: const EdgeInsets.symmetric(vertical: Insets.xlarge),
       child: Center(
         child: Text(AppLocalizations.of(context)
             .homepageLastUpdated(time?.toLocal() ?? DateTime(0))),
@@ -507,9 +509,8 @@ class DailyForecastList extends StatelessWidget {
 
     return Container(
         color: Theme.of(context).colorScheme.surface,
-        // margin: const EdgeInsets.symmetric(vertical: kVerticalSpacing * 6),
         padding: const EdgeInsets.symmetric(
-            vertical: kVerticalSpacing * 2, horizontal: kLateralPadding),
+            vertical: Insets.medium, horizontal: kLateralPadding),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -563,13 +564,13 @@ class DailyForecastItem extends StatelessWidget {
     log(index.toString());
 
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: kVerticalSpacing),
+      padding: const EdgeInsets.symmetric(vertical: Insets.small),
       child: DefaultTextStyle.merge(
         style: Theme.of(context).textTheme.bodyText1,
         child: Row(
           children: [
             Expanded(
-              flex: 2,
+              flex: 3,
               child: Text(weekDay),
             ),
             Expanded(
@@ -578,8 +579,9 @@ class DailyForecastItem extends StatelessWidget {
             ),
             //Todo: include icon
             Expanded(
-                flex: 0,
-                child: Text('${maxTemp?.round()}°/${minTemp?.round()}°')),
+                child: Align(
+                    alignment: Alignment.centerRight,
+                    child: Text('${maxTemp?.round()}°/${minTemp?.round()}°'))),
           ],
         ),
       ),
@@ -598,31 +600,42 @@ class LocationDetails extends StatelessWidget {
         return state.weather;
       }
     });
+
+    //convert to Location Times
+    final location = tz.getLocation(weather?.timezone ?? 'America/Detroit');
+    final sunRiseLocationTime =
+        tz.TZDateTime.from(weather?.sunRise ?? DateTime(0), location);
+    final sunSetLocationTime =
+        tz.TZDateTime.from(weather?.sunSet ?? DateTime(0), location);
+
     return Container(
-      height: 250,
       alignment: Alignment.center,
       padding: const EdgeInsets.symmetric(
-          vertical: 8.0, horizontal: kLateralPadding),
+          vertical: Insets.xlarge, horizontal: kLateralPadding),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            padding: const EdgeInsets.symmetric(vertical: Insets.small),
             child: Row(
               children: [
                 Expanded(
                   child: Column(
                     children: [
-                      Text('Sunrise'),
-                      Text('${weather?.sunRise.hour}:35')
+                      Text(AppLocalizations.of(context).sunRise,
+                          style: Theme.of(context).textTheme.headline6),
+                      Text(AppLocalizations.of(context)
+                          .hourMinute(sunRiseLocationTime)),
                     ],
                   ),
                 ),
                 Expanded(
                   child: Column(
                     children: [
-                      Text('Sunset'),
-                      Text('${weather?.sunSet.hour}:00')
+                      Text(AppLocalizations.of(context).sunSet,
+                          style: Theme.of(context).textTheme.headline6),
+                      Text(AppLocalizations.of(context)
+                          .hourMinute(sunSetLocationTime)),
                     ],
                   ),
                 ),
@@ -630,14 +643,17 @@ class LocationDetails extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            padding: const EdgeInsets.symmetric(vertical: Insets.small),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Expanded(
                   child: Column(
                     children: [
-                      Text('wind_direction'),
+                      Text(
+                        AppLocalizations.of(context).windDirection,
+                        style: Theme.of(context).textTheme.headline6,
+                      ),
                       Text('${weather?.sunRise.hour}')
                     ],
                   ),
@@ -645,8 +661,9 @@ class LocationDetails extends StatelessWidget {
                 Expanded(
                   child: Column(
                     children: [
-                      Text('visibility'),
-                      Text('${weather?.sunSet.hour}')
+                      Text(AppLocalizations.of(context).visibility,
+                          style: Theme.of(context).textTheme.headline6),
+                      Text('10 mi'),
                     ],
                   ),
                 ),
@@ -654,9 +671,13 @@ class LocationDetails extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            padding: const EdgeInsets.symmetric(vertical: Insets.small),
             child: Column(
-              children: [Text('predictability'), Text('25%')],
+              children: [
+                Text(AppLocalizations.of(context).predictability,
+                    style: Theme.of(context).textTheme.headline6),
+                Text('87%'),
+              ],
             ),
           )
         ],
@@ -672,8 +693,14 @@ class Footer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.centerLeft,
-      padding: EdgeInsets.symmetric(vertical: 8),
-      child: Text('Data from MetaWeather'),
+      padding: const EdgeInsets.symmetric(
+          vertical: Insets.medium, horizontal: kLateralPadding),
+      child: RichText(
+        text: TextSpan(children: [
+          TextSpan(text: AppLocalizations.of(context).dataFrom),
+          TextSpan(text: ' MetaWeather'),
+        ]),
+      ),
     );
   }
 }
