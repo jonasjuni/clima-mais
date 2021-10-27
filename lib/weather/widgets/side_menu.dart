@@ -6,7 +6,6 @@ import 'package:clima_mais/theme.dart';
 import 'package:clima_mais/weather/bloc/weather_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class SideMenu extends StatelessWidget {
   const SideMenu({Key? key}) : super(key: key);
@@ -18,9 +17,9 @@ class SideMenu extends StatelessWidget {
         padding: const EdgeInsets.all(Insets.small),
         child: Column(
           children: [
-            TopMenu(),
-            Logo(),
-            Expanded(child: LocationManagementList())
+            SideTopMenu(),
+            SideMenuLogo(),
+            Expanded(child: LocationManagementList()),
           ],
         ),
       ),
@@ -28,8 +27,8 @@ class SideMenu extends StatelessWidget {
   }
 }
 
-class TopMenu extends StatelessWidget {
-  const TopMenu({Key? key}) : super(key: key);
+class SideTopMenu extends StatelessWidget {
+  const SideTopMenu({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -54,8 +53,8 @@ class TopMenu extends StatelessWidget {
   }
 }
 
-class Logo extends StatelessWidget {
-  const Logo({Key? key}) : super(key: key);
+class SideMenuLogo extends StatelessWidget {
+  const SideMenuLogo({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -81,20 +80,23 @@ class LocationManagementList extends StatelessWidget {
       return <Location>[];
     });
     return Container(
+      padding: const EdgeInsets.symmetric(vertical: Insets.small),
       child: ReorderableListView.builder(
+        physics: const NeverScrollableScrollPhysics(),
         itemCount: locations.length,
         onReorder: (oldIndex, newIndex) => context.read<WeatherBloc>().add(
             WeatherLocationOrderChanged(
                 oldIndex: oldIndex, newIndex: newIndex, locations: locations)),
-        itemBuilder: (context, index) => LocationTile(
+        itemBuilder: (context, index) => LocationManagementTile(
             key: ObjectKey(locations[index]), location: locations[index]),
       ),
     );
   }
 }
 
-class LocationTile extends StatelessWidget {
-  const LocationTile({Key? key, required this.location}) : super(key: key);
+class LocationManagementTile extends StatelessWidget {
+  const LocationManagementTile({Key? key, required this.location})
+      : super(key: key);
 
   final Location location;
 
@@ -118,7 +120,18 @@ class LocationTile extends StatelessWidget {
       leading: Icon(_getIconData(location.locationType)),
       title: Text(location.title),
       onTap: () => null,
-      trailing: Icon(Icons.drag_indicator),
+      trailing: const Icon(Icons.drag_indicator),
+    );
+  }
+}
+
+class SideMenuFooter extends StatelessWidget {
+  const SideMenuFooter({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text('jcsj.dev'),
     );
   }
 }

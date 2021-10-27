@@ -36,12 +36,12 @@ class LocationSearchPage extends StatelessWidget {
             },
             builder: (context, state) {
               final isLoading = state is LocationFetchInProgess;
+              //Todo: create my own search widget
               return FloatingSearchBar(
-                  //Todo: create my own search widget
                   clearQueryOnClose: false,
                   progress: isLoading,
                   hint: AppLocalizations.of(context).locationSearch,
-                  isScrollControlled: true,
+                  isScrollControlled: false,
                   builder: (context, _) {
                     if (state is LocationFetchSuccess) {
                       return Container(
@@ -63,11 +63,11 @@ class LocationSearchPage extends StatelessWidget {
                   onSubmitted: (value) => context
                       .read<LocationSearchBloc>()
                       .add(LocationSearchQueryChanged(
-                          query: value, userLocations: userLocations)),
+                          query: value.trim(), userLocations: userLocations)),
                   onQueryChanged: (value) => context
                       .read<LocationSearchBloc>()
                       .add(LocationSearchQueryChanged(
-                          query: value, userLocations: userLocations)),
+                          query: value.trim(), userLocations: userLocations)),
                   body: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
