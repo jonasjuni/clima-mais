@@ -118,6 +118,7 @@ class DynamicBackground extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    log('DynamicBackground build');
     final weatherCondition =
         context.select<WeatherBloc, WeatherCondition>((WeatherBloc bloc) {
       final state = bloc.state;

@@ -21,7 +21,7 @@ class _LocatioMapState extends State<LocatioMap> {
 
   Future<void> _loadAsset() async {
     assert(isMapCreated == true);
-    //context here wtf? The newly created State object is associated with a BuildContext.
+    //context here? The newly created State object is associated with a BuildContext.
     final path = currentBrightness == Brightness.light
         ? 'assets/maps/light_style.json'
         : 'assets/maps/dark_style.json';
@@ -44,15 +44,21 @@ class _LocatioMapState extends State<LocatioMap> {
     final latlng = context.select((WeatherBloc bloc) {
       final state = bloc.state;
       if (state is WeatherLoadSuccess) {
-        return state.weather.lattLong;
+        return LatLng(
+            state.weather.lattLong.latitude, state.weather.lattLong.longitude);
       }
-      return const Coordinates(0, 0);
+      return const LatLng(0, 0);
     });
 
     final _locationPosition = CameraPosition(
-      target: LatLng(latlng.latitude, latlng.longitude),
+      target: latlng,
       zoom: 11.3,
     );
+    if (isMapCreated) {
+      assert(isMapCreated);
+      _controller.moveCamera(CameraUpdate.newLatLng(latlng));
+    }
+
     return SizedBox(
       height: 300,
       child: GoogleMap(

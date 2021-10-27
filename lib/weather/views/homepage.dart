@@ -37,7 +37,7 @@ class WeatherView extends StatelessWidget {
         child: BlocConsumer<WeatherBloc, WeatherState>(
           listener: (context, state) {},
           buildWhen: (previous, current) =>
-              previous.hashCode != current.hashCode,
+              previous.runtimeType != current.runtimeType,
           builder: (context, state) {
             log('Bloconsumer homepage');
             if (state is WeatherInitial) {
