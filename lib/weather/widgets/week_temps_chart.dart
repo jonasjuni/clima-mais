@@ -4,7 +4,6 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:clima_mais/theme.dart';
-import 'package:clima_mais/weather/weather.dart';
 import 'package:clima_mais/settings/settings.dart';
 import 'package:clima_mais/repositories/repositories.dart';
 
@@ -29,16 +28,19 @@ const kWindColors = [
 
 const barColorsList = [kHumidityColors, kTempColors, kWindColors];
 
-class DatllyForecastChart extends StatefulWidget {
-  const DatllyForecastChart({
+class DailyForecastChart extends StatefulWidget {
+  const DailyForecastChart({
     Key? key,
+    required this.weatherForecasts,
   }) : super(key: key);
 
   @override
-  State<DatllyForecastChart> createState() => _DatllyForecastChartState();
+  State<DailyForecastChart> createState() => _DailyForecastChartState();
+
+  final List<WeatherForecast> weatherForecasts;
 }
 
-class _DatllyForecastChartState extends State<DatllyForecastChart> {
+class _DailyForecastChartState extends State<DailyForecastChart> {
   var _selectedIndex = 1;
 
   void _selectIndex(int index) {
@@ -55,14 +57,7 @@ class _DatllyForecastChartState extends State<DatllyForecastChart> {
     final isImperial = context.select<SettingsBloc, bool>(
         (SettingsBloc bloc) => bloc.state.settings.isImperial);
 
-    final weatherForecasts =
-        context.select<WeatherBloc, List<WeatherForecast>>((WeatherBloc bloc) {
-      final state = bloc.state;
-      if (state is WeatherLoadSuccess) {
-        return state.weather.weatherForecasts;
-      }
-      return <WeatherForecast>[];
-    });
+    final weatherForecasts = widget.weatherForecasts;
 
     //Map
     final tempData = <FlSpot>[];
@@ -119,6 +114,7 @@ class _DatllyForecastChartState extends State<DatllyForecastChart> {
                   ),
                 ),
                 lineTouchData: LineTouchData(
+                  //Todo: a11y
                   touchTooltipData: LineTouchTooltipData(
                       tooltipBgColor: Theme.of(context).cardColor,
                       getTooltipItems: (touchedSpots) {

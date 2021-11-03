@@ -16,11 +16,11 @@ class WeatherLoadInProgress extends WeatherState {
 class WeatherLoadSuccess extends WeatherState {
   final Weather weather;
   final List<Location> locations;
-  const WeatherLoadSuccess({required this.weather, required this.locations});
+  const WeatherLoadSuccess(
+      {required this.weather, this.locations = const <Location>[]});
 }
 
 class WeatherLoadFailure extends WeatherState {
   final Exception exception;
-  final List<Location> locations;
-  const WeatherLoadFailure({required this.exception, required this.locations});
+  const WeatherLoadFailure({required this.exception});
 }

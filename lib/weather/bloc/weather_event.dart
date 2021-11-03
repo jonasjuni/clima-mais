@@ -25,9 +25,8 @@ class WeatherLocationOrderChanged extends WeatherEvent {
 }
 
 class WeatherLocationDeleted extends WeatherEvent {
-  const WeatherLocationDeleted({required this.index, required this.locations});
+  const WeatherLocationDeleted({required this.index});
   final int index;
-  final List<Location> locations;
 }
 
 class WeatherLocationSelected extends WeatherEvent {

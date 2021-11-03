@@ -7,10 +7,12 @@ import 'package:clima_mais/weather/weather.dart';
 import 'package:clima_mais/repositories/repositories.dart';
 
 class LocatioMap extends StatefulWidget {
-  const LocatioMap({Key? key}) : super(key: key);
+  const LocatioMap({Key? key, required this.latlng}) : super(key: key);
 
   @override
   State<LocatioMap> createState() => _LocatioMapState();
+
+  final Coordinates latlng;
 }
 
 class _LocatioMapState extends State<LocatioMap> {
@@ -32,7 +34,6 @@ class _LocatioMapState extends State<LocatioMap> {
 
   @override
   Widget build(BuildContext context) {
-    developer.log('Map build');
     //Save current Brightness
     currentBrightness = Theme.of(context).brightness;
     //If maps is created and there's a new brightness, update map style
@@ -41,14 +42,7 @@ class _LocatioMapState extends State<LocatioMap> {
       _loadAsset();
     }
 
-    final latlng = context.select((WeatherBloc bloc) {
-      final state = bloc.state;
-      if (state is WeatherLoadSuccess) {
-        return LatLng(
-            state.weather.lattLong.latitude, state.weather.lattLong.longitude);
-      }
-      return const LatLng(0, 0);
-    });
+    final latlng = LatLng(widget.latlng.latitude, widget.latlng.longitude);
 
     final _locationPosition = CameraPosition(
       target: latlng,

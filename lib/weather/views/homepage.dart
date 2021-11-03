@@ -35,11 +35,17 @@ class WeatherView extends StatelessWidget {
                 ?.copyWith(statusBarColor: Colors.transparent) ??
             const SystemUiOverlayStyle(),
         child: BlocConsumer<WeatherBloc, WeatherState>(
-          listener: (context, state) {},
-          buildWhen: (previous, current) =>
-              previous.runtimeType != current.runtimeType,
+          listener: (context, state) {
+            if (state is WeatherLoadFailure) {
+              showDialog<void>(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                        content: Text(state.exception.toString()),
+                      ));
+            }
+          },
           builder: (context, state) {
-            log('Bloconsumer homepage');
+            log('1st BlocConsumer homepage');
             if (state is WeatherInitial) {
               return const WeatherEmpty();
             }
@@ -47,7 +53,11 @@ class WeatherView extends StatelessWidget {
               return const WeatherLoading();
             }
             if (state is WeatherLoadSuccess) {
-              return WeatherSuccess();
+              return state.locations.isNotEmpty
+                  ? WeatherCompleted(
+                      weather: state.weather,
+                    )
+                  : WeatherEmpty();
             }
             if (state is WeatherLoadFailure) {
               return WeatherFailure(exception: state.exception);

@@ -12,12 +12,13 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
       : _weatherRepository = weatherRepository,
         super(const WeatherInitial()) {
     // New bloc API
-    on<WeatherFetchRequested>(_onWeatherRequested);
+    on<WeatherFetchRequested>(_onWeatherFetchRequested);
     on<WeatherDataRefreshed>(_onWeatherRefreshed);
     on<WeatherLocationOrderChanged>(_onWeatherLocationOrderChanged);
+    on<WeatherLocationDeleted>(_onWeatherLocationDeleted);
   }
 
-  void _onWeatherRequested(
+  void _onWeatherFetchRequested(
       WeatherFetchRequested event, Emitter<WeatherState> emit) async {
     emit(const WeatherLoadInProgress());
     final locations = event.locations;
@@ -27,7 +28,7 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
 
       emit(WeatherLoadSuccess(weather: weather, locations: locations));
     } on Exception catch (e) {
-      emit(WeatherLoadFailure(exception: e, locations: locations));
+      emit(WeatherLoadFailure(exception: e));
     }
   }
 
@@ -35,30 +36,34 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
       WeatherDataRefreshed event, Emitter<WeatherState> emit) async {
     final currentState = state;
 
-    if (currentState is WeatherLoadSuccess) {
+    if (currentState is WeatherLoadSuccess &&
+        currentState.locations.isNotEmpty) {
       late Location refreshedLocation;
       final locations = currentState.locations;
 
       try {
-        final currentLocation = locations.first;
-        if (currentLocation.locationType == LocationType.physical) {
-          //Update device location
-          refreshedLocation = await _updateLocation(currentLocation);
+        final favoriteLocation = locations.first;
+        if (favoriteLocation.locationType == LocationType.physical) {
+          //Update device GPS location
+          refreshedLocation = await _updateGPSLocation(favoriteLocation);
         } else {
-          refreshedLocation = currentLocation;
+          refreshedLocation = favoriteLocation;
         }
         final weather =
             await _weatherRepository.getWeatherById(refreshedLocation.woeid);
 
         emit(WeatherLoadSuccess(weather: weather, locations: locations));
       } on Exception catch (e) {
-        emit(WeatherLoadFailure(exception: e, locations: locations));
+        // emit(WeatherLoadFailure(exception: e));
+
+        //Undo last state
+        emit(currentState);
       }
     }
   }
 
   void _onWeatherLocationOrderChanged(
-      WeatherLocationOrderChanged event, Emitter<WeatherState> emit) async {
+      WeatherLocationOrderChanged event, Emitter<WeatherState> emit) {
     final currentState = state;
     var newIndex = event.newIndex;
     final oldIndex = event.oldIndex;
@@ -79,7 +84,27 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
     }
   }
 
-  Future<Location> _updateLocation(Location currentLocation) async {
+  void _onWeatherLocationDeleted(
+      WeatherLocationDeleted event, Emitter<WeatherState> emit) {
+    final currentState = state;
+    final index = event.index;
+    if (currentState is WeatherLoadSuccess) {
+      final locations = currentState.locations.toList()..removeAt(index);
+      emit(
+        WeatherLoadSuccess(
+          weather: currentState.weather,
+          locations: locations,
+        ),
+      );
+
+      log(locations.toString());
+    }
+    if (index == 0) {
+      add(const WeatherDataRefreshed());
+    }
+  }
+
+  Future<Location> _updateGPSLocation(Location currentLocation) async {
     try {
       final coordinates = await _weatherRepository.getDeviceCoordinates();
       if (currentLocation.lattLong == coordinates) {

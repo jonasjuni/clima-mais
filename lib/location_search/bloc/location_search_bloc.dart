@@ -18,7 +18,7 @@ class LocationSearchBloc
         super(LocationSearchInitial()) {
     on<LocationSearchFetched>(
       _onLocationSearchFetched,
-      transformer: debounce(const Duration(milliseconds: 2000)),
+      transformer: debounce(const Duration(milliseconds: 1500)),
     );
 
     on<LocationSearchQueryChanged>(_onLocationSearchQueryChanged);
