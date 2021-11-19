@@ -81,11 +81,11 @@ class Temperature {
       : celsius = (fahrenheit - 32) * 5 / 9;
 }
 
-class Speed {
+class Distance {
   final double metric, imperial;
 
-  Speed.fromImperial(this.imperial) : metric = imperial * 1.609344;
-  Speed.fromMetric(this.metric) : imperial = metric * 0.62137;
+  Distance.fromImperial(this.imperial) : metric = imperial * 1.609344;
+  Distance.fromMetric(this.metric) : imperial = metric * 0.62137;
 }
 
 class WeatherForecast {
@@ -101,6 +101,8 @@ class WeatherForecast {
     required this.windDirection,
     required this.created,
     required this.date,
+    required this.visibility,
+    required this.predictability,
   });
 
   final WeatherCondition condition;
@@ -110,10 +112,12 @@ class WeatherForecast {
   final Temperature temp;
   final double humidity;
   final double airPressure;
-  final Speed windSpeed;
+  final Distance windSpeed;
   final String windDirection;
   final DateTime created;
   final DateTime date;
+  final Distance visibility;
+  final int predictability;
 
   String get conditionAnimation => _weatherConditionEnumMap[condition]!;
 }

@@ -1,4 +1,8 @@
+import 'dart:async';
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -52,7 +56,9 @@ class WeatherCompleted extends StatelessWidget {
                     child: Text('Area Map',
                         style: Theme.of(context).textTheme.headline6)),
                 LocatioMap(latlng: weather.lattLong),
-                LocationDetails(),
+                LocationDetails(
+                  weather: weather,
+                ),
                 Footer(),
               ],
             ),
@@ -110,7 +116,6 @@ class DailyForecastList extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            //Todo: l10n
             ...List.generate(
                 weatherForecasts.length,
                 (index) => DailyForecastItem(
@@ -170,12 +175,12 @@ class DailyForecastItem extends StatelessWidget {
             Expanded(
               child: Text(weatherForecast.condition.toLocalizedTitle(context)),
             ),
-            //Todo: include icon
+            //TODO: include icon
             Expanded(
               child: Align(
                 alignment: Alignment.centerRight,
                 child: Text(
-                    '${maxTemp.round()}°/${minTemp.round()}°'), //Todo: A11y
+                    '${maxTemp.round()}°/${minTemp.round()}°'), //TODO: A11y
               ),
             ),
           ],
@@ -186,23 +191,25 @@ class DailyForecastItem extends StatelessWidget {
 }
 
 class LocationDetails extends StatelessWidget {
-  const LocationDetails({Key? key}) : super(key: key);
+  const LocationDetails({Key? key, required this.weather}) : super(key: key);
+  final Weather weather;
 
   @override
   Widget build(BuildContext context) {
-    final weather = context.select((WeatherBloc bloc) {
-      final state = bloc.state;
-      if (state is WeatherLoadSuccess) {
-        return state.weather;
-      }
-    });
+    log('Location details Build');
+    final weatherForecast = weather.weatherForecasts.first;
 
-    //convert to Location Times
-    final location = tz.getLocation(weather?.timezone ?? 'America/Detroit');
-    final sunRiseLocationTime =
-        tz.TZDateTime.from(weather?.sunRise ?? DateTime(0), location);
-    final sunSetLocationTime =
-        tz.TZDateTime.from(weather?.sunSet ?? DateTime(0), location);
+    final isImperial = context.select((SettingsBloc bloc) =>
+        bloc.state.settings.lenghtUnit == LenghtUnit.imperial);
+
+    final visibility = isImperial
+        ? '${weatherForecast.visibility.imperial.round()} mi'
+        : '${weatherForecast.visibility.metric.round()} km';
+
+    //Convert to local time
+    final tz.Location location = tz.getLocation(weather.timezone);
+    final sunRiseLocationTime = tz.TZDateTime.from(weather.sunRise, location);
+    final sunSetLocationTime = tz.TZDateTime.from(weather.sunSet, location);
 
     return Container(
       alignment: Alignment.center,
@@ -247,10 +254,12 @@ class LocationDetails extends StatelessWidget {
                   child: Column(
                     children: [
                       Text(
-                        AppLocalizations.of(context).windDirection,
+                        'Local Time', //TODO L10n
                         style: Theme.of(context).textTheme.headline6,
                       ),
-                      Text('${weather?.sunRise.hour}')
+                      ClockTimer(
+                        location: location,
+                      ), //TODO local clock
                     ],
                   ),
                 ),
@@ -259,7 +268,7 @@ class LocationDetails extends StatelessWidget {
                     children: [
                       Text(AppLocalizations.of(context).visibility,
                           style: Theme.of(context).textTheme.headline6),
-                      Text('10 mi'),
+                      Text(visibility),
                     ],
                   ),
                 ),
@@ -272,13 +281,66 @@ class LocationDetails extends StatelessWidget {
               children: [
                 Text(AppLocalizations.of(context).predictability,
                     style: Theme.of(context).textTheme.headline6),
-                Text('87%'),
+                Text('${weatherForecast.predictability}%'),
               ],
             ),
           )
         ],
       ),
     );
+  }
+}
+
+class ClockTimer extends StatefulWidget {
+  const ClockTimer({Key? key, required this.location}) : super(key: key);
+  final tz.Location location;
+
+  @override
+  _ClockTimerState createState() => _ClockTimerState();
+}
+
+class _ClockTimerState extends State<ClockTimer>
+    with SingleTickerProviderStateMixin {
+  DateTime _dateTime = DateTime.now();
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _updateTime();
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  ///From Fluter clock challenger https://github.com/flutter/flutter_clock
+  void _updateTime() {
+    setState(() {
+      _dateTime = DateTime.now();
+      // Update once per minute. If you want to update every second, use the
+      // following code.
+      _timer = Timer(
+        const Duration(minutes: 1) -
+            Duration(seconds: _dateTime.second) -
+            Duration(milliseconds: _dateTime.millisecond),
+        _updateTime,
+      );
+      // Update once per second, but make sure to do it at the beginning of each
+      // new second, so that the clock is accurate.
+      // _timer = Timer(
+      //   Duration(seconds: 1) - Duration(milliseconds: _dateTime.millisecond),
+      //   _updateTime,
+      // );
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final time = tz.TZDateTime.from(_dateTime, widget.location);
+    return Text(AppLocalizations.of(context).hourMinute(time));
   }
 }
 
@@ -294,7 +356,7 @@ class Footer extends StatelessWidget {
       child: RichText(
         text: TextSpan(children: [
           TextSpan(text: AppLocalizations.of(context).dataFrom),
-          TextSpan(text: ' MetaWeather'),
+          TextSpan(text: ' MetaWeather'), //TODO add link to metaweather
         ], style: Theme.of(context).textTheme.bodyText2),
       ),
     );

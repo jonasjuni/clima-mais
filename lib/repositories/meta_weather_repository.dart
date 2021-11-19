@@ -124,10 +124,12 @@ extension ConsolidatedWeatherdXWeatherForecast
       temp: Temperature.fromCelsius(theTemp),
       humidity: humidity,
       airPressure: airPressure,
-      windSpeed: Speed.fromImperial(windSpeed),
+      windSpeed: Distance.fromImperial(windSpeed),
       windDirection: windDirectionCompass,
       created: created,
       date: applicableDate,
+      visibility: Distance.fromImperial(visibility),
+      predictability: predictability,
     );
   }
 }
