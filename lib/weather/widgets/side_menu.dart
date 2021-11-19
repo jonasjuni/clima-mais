@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:clima_mais/location_search/location_search.dart';
 import 'package:clima_mais/repositories/repositories.dart';
 import 'package:clima_mais/settings/settings.dart';
 import 'package:clima_mais/theme.dart';
@@ -14,23 +15,27 @@ class SideMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    log('Side Menu build');
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.all(Insets.small),
-        child: Column(
+        child: ListView(
           children: [
             SideTopMenu(),
             SideMenuLogo(),
-            Container(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                'Your locations',
-                semanticsLabel:
-                    'Locations list, the location on start will be displayed in the main page.',
-              ),
+            BlocBuilder<WeatherBloc, WeatherState>(
+              buildWhen: (previous, current) {
+                return current is WeatherLoadSuccess;
+              },
+              builder: (context, state) {
+                if (state is WeatherLoadSuccess) {
+                  return LocationManagementList(locations: state.locations);
+                }
+                return SizedBox(
+                  height: 56 * 5,
+                );
+              },
             ),
-            Expanded(child: LocationManagementList()),
-            SideMenuFooter()
           ],
         ),
       ),
@@ -81,96 +86,90 @@ class SideMenuLogo extends StatelessWidget {
 }
 
 class LocationManagementList extends StatelessWidget {
-  const LocationManagementList({Key? key}) : super(key: key);
+  const LocationManagementList({Key? key, required this.locations})
+      : super(key: key);
+  final List<Location> locations;
 
   @override
   Widget build(BuildContext context) {
-    final locations = context.select((WeatherBloc bloc) {
-      final state = bloc.state;
-      if (state is WeatherLoadSuccess) {
-        return state.locations;
-      }
-      return <Location>[];
-    });
+    return Column(
+      children: [
+        Container(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            'Your locations',
+            semanticsLabel:
+                'Locations list, the location on start will be displayed on the main page.',
+          ),
+        ), // Todo l10n
+        Container(
+          height: 56 * 5,
+          margin: const EdgeInsets.symmetric(vertical: Insets.small),
+          //Todo: a Merge is removing CustomSemanticsAction https://github.com/flutter/flutter/issues/71396
+          child: ReorderableListView.builder(
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: locations.length,
+            // prototypeItem: const ListTile(), // Prototype jumps down bug
+            onReorder: (oldIndex, newIndex) => context.read<WeatherBloc>().add(
+                WeatherLocationOrderChanged(
+                    oldIndex: oldIndex,
+                    newIndex: newIndex,
+                    locations: locations)),
+            itemBuilder: (context, index) => ListItemTest(
+              key: ObjectKey(locations[index]),
+              location: locations[index],
+              onDelete: () {
+                context
+                    .read<WeatherBloc>()
+                    .add(WeatherLocationDeleted(index: index));
+                Navigator.of(context).pop();
+              },
+            ),
+          ),
+        ),
+        AddNewCityButton(
+          onPressed: () async {
+            final result = await Navigator.push<List<Location>>(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      LocationSearchPage(userLocations: locations)),
+            );
 
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: Insets.small),
-      //Todo: a Merge is removing CustomSemanticsAction https://github.com/flutter/flutter/issues/71396
-      child: ReorderableListView.builder(
-        physics: const NeverScrollableScrollPhysics(),
-        itemCount: locations.length,
-        onReorder: (oldIndex, newIndex) => context.read<WeatherBloc>().add(
-            WeatherLocationOrderChanged(
-                oldIndex: oldIndex, newIndex: newIndex, locations: locations)),
-        itemBuilder: (context, index) => ListItemTest(
-          key: ObjectKey(locations[index]),
-          location: locations[index],
-          onDelete: () {
-            context
-                .read<WeatherBloc>()
-                .add(WeatherLocationDeleted(index: index));
-            Navigator.of(context).pop();
+            if (result == null) {
+              return;
+            } else {
+              Navigator.of(context).pop();
+              context
+                  .read<WeatherBloc>()
+                  .add(WeatherFetchRequested(locations: result));
+            }
           },
         ),
-      ),
+      ],
     );
   }
 }
 
-class LocationManagementTile extends StatelessWidget {
-  const LocationManagementTile({required this.key, required this.location})
-      : super(key: key);
+class AddNewCityButton extends StatelessWidget {
+  const AddNewCityButton({
+    Key? key,
+    required this.onPressed,
+  }) : super(key: key);
 
-  final Location location;
-  final Key key;
-  IconData _getIconData(LocationType locationType) {
-    switch (locationType) {
-      case LocationType.physical:
-        return Icons.location_on_outlined;
-      case LocationType.saved:
-        return Icons.bookmark_outlined;
-      case LocationType.history:
-        return Icons.history_outlined;
-      case LocationType.fetched:
-        return Icons.location_city_outlined;
-    }
-  }
+  final VoidCallback? onPressed;
 
   @override
   Widget build(BuildContext context) {
-    log(key.toString());
-    return Dismissible(
-      key: key,
-      dismissThresholds: {DismissDirection.endToStart: 0.2},
-      direction: DismissDirection.endToStart,
-      confirmDismiss: (direction) async {
-        ScaffoldMessenger.of(context)
-          ..hideCurrentSnackBar()
-          ..showSnackBar(
-            SnackBar(
-              backgroundColor: Theme.of(context).errorColor,
-              action: SnackBarAction(
-                label: 'Undo',
-                onPressed: () {},
-              ),
-              content: Text('${location.title} Deleted'),
-            ),
-          );
-        return Future.delayed(Duration(seconds: 5), () => false);
-      },
-      onDismissed: (direction) => null,
-      background: Container(
-        padding: const EdgeInsets.symmetric(horizontal: Insets.medium),
-        alignment: Alignment.centerRight,
-        color: Theme.of(context).errorColor,
-        child: Icon(Icons.delete),
+    return TextButton(
+      child: SizedBox(
+        width: 100,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [const Icon(Icons.add), Text('Add new city')], //Todo l10n
+        ),
       ),
-      child: ListTile(
-        leading: Icon(_getIconData(location.locationType)),
-        title: Text(location.title),
-        onTap: () => null,
-        trailing: const Icon(Icons.drag_indicator),
-      ),
+      onPressed: onPressed,
     );
   }
 }
@@ -220,48 +219,45 @@ class ListItemTest extends StatelessWidget {
     final deleteL10n = MaterialLocalizations.of(context).deleteButtonTooltip;
     return Slidable(
       key: key,
-      actionPane: SlidableBehindActionPane(),
-      secondaryActions: [
-        SlideAction(
-          child: Container(
-            color: Theme.of(context).errorColor,
-            width: double.infinity,
-            height: double.infinity,
-            child: Icon(
-              Icons.delete,
-              semanticLabel: deleteL10n,
-            ),
+      endActionPane: ActionPane(
+        motion: const BehindMotion(),
+        extentRatio: 0.24,
+        children: [
+          SlidableAction(
+            label: deleteL10n,
+            icon: Icons.delete,
+            backgroundColor: Theme.of(context).errorColor,
+            onPressed: (context) async {
+              showDialog<bool>(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                        title: Row(
+                          children: [
+                            const Icon(Icons.delete),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: Insets.small),
+                              child: Text(deleteL10n),
+                            )
+                          ], //todo l10n
+                        ),
+                        content: Text(
+                            'Do you want to delete ${location.title}?'), //todo l10n,
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.of(context).pop(),
+                            child: Text('No'), //todo l10n
+                          ),
+                          TextButton(
+                            onPressed: onDelete,
+                            child: Text('Yes'), //todo l10n
+                          ),
+                        ],
+                      ));
+            },
           ),
-          onTap: () async {
-            showDialog<bool>(
-                context: context,
-                builder: (context) => AlertDialog(
-                      title: Row(
-                        children: [
-                          const Icon(Icons.delete),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: Insets.small),
-                            child: Text(deleteL10n),
-                          )
-                        ], //todo l10n
-                      ),
-                      content: Text(
-                          'Do you want to delete ${location.title}?'), //todo l10n,
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.of(context).pop(),
-                          child: Text('No'), //todo l10n
-                        ),
-                        TextButton(
-                          onPressed: onDelete,
-                          child: Text('Yes'), //todo l10n
-                        ),
-                      ],
-                    ));
-          },
-        ),
-      ],
+        ],
+      ),
       child: Container(
         // color: Theme.of(context).scaffoldBackgroundColor,
         child: Material(

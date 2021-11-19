@@ -12,10 +12,11 @@ import 'package:timezone/data/latest_10y.dart' as tz;
 
 void main() async {
   tz.initializeTimeZones();
-  Bloc.observer = ClimaMaisBlocObserver();
+
+  // Bloc.observer = ClimaMaisBlocObserver();
   //init storage
   WidgetsFlutterBinding.ensureInitialized();
-  HydratedBloc.storage = await HydratedStorage.build(
+  final storage = await HydratedStorage.build(
     storageDirectory: await getTemporaryDirectory(),
   );
   // init deps
@@ -27,8 +28,13 @@ void main() async {
     ),
   );
 
-  runApp(ClimaMaisApp(
-    settingsBloc: settingsBloc,
-    weatherRepository: weatherRepository,
-  ));
+  HydratedBlocOverrides.runZoned(
+    () => runApp(
+      ClimaMaisApp(
+        settingsBloc: settingsBloc,
+        weatherRepository: weatherRepository,
+      ),
+    ),
+    storage: storage,
+  );
 }
