@@ -1,5 +1,12 @@
 {
   "@@locale": "en",
+  "@deletePrompt": {
+    "placeholders": {
+      "object": {
+        "type": "String"
+      }
+    }
+  },
   "@forecastDate": {
     "description": "Applicable weather date",
     "placeholders": {
@@ -43,12 +50,15 @@
       }
     }
   },
+  "addNewCity": "Add new city",
   "airPressure": "Air Pressure",
   "appTitle": "Meta Weather",
   "cloudy": "Cloudy",
   "dataFrom": "Data from",
+  "deletePrompt": "Do you want to delete {object}?",
   "fog": "Fog",
   "forecastDate": "{date}",
+  "gpsIconsSemantic": "GPS location",
   "hail": "Hail",
   "heavyRain": "Heavy rain",
   "heavySnow": "Heavy snow",
@@ -60,10 +70,14 @@
   "lightSnow": "Light snow",
   "locationSearch": "Search here",
   "locationSearchGPS": "Add current location",
+  "locationsSaved": "Your locations",
+  "locationsSavedSemantic": "Locations list, the location on start will be displayed on the main page.",
   "mediumRain": "Medium rain",
   "mediumSnow": "Medium Snow",
+  "no": "No",
   "partlyCloudy": "Mostly Cloudy",
   "predictability": "Predictability",
+  "savedLocationIconSemantic": "Saved location",
   "selectCityFormCity": "City",
   "selectCityNotSupported": "City not supported",
   "settingsTemp": "Temperature",
@@ -89,5 +103,6 @@
   "weekTomorrow": "Tomorrow",
   "weekWeek": "Week",
   "windDirection": "Wind Direction",
-  "windSpeed": "Wind"
+  "windSpeed": "Wind",
+  "yes": "Yes"
 }

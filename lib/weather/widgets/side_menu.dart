@@ -1,28 +1,26 @@
-import 'dart:developer';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:clima_mais/location_search/location_search.dart';
 import 'package:clima_mais/repositories/repositories.dart';
 import 'package:clima_mais/settings/settings.dart';
-import 'package:clima_mais/theme.dart';
 import 'package:clima_mais/weather/bloc/weather_bloc.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:clima_mais/theme.dart';
 
 class SideMenu extends StatelessWidget {
   const SideMenu({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    log('Side Menu build');
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.all(Insets.small),
         child: ListView(
           children: [
-            SideTopMenu(),
-            SideMenuLogo(),
+            const SideTopMenu(),
+            const SideMenuLogo(),
             BlocBuilder<WeatherBloc, WeatherState>(
               buildWhen: (previous, current) {
                 return current is WeatherLoadSuccess;
@@ -31,7 +29,7 @@ class SideMenu extends StatelessWidget {
                 if (state is WeatherLoadSuccess) {
                   return LocationManagementList(locations: state.locations);
                 }
-                return SizedBox(
+                return const SizedBox(
                   height: 56 * 5,
                 );
               },
@@ -65,7 +63,7 @@ class SideTopMenu extends StatelessWidget {
             );
           },
           icon: const Icon(Icons.settings),
-          tooltip: 'Settings', //TODO: l10n
+          tooltip: AppLocalizations.of(context).settingsTitle,
         ),
       ],
     );
@@ -77,8 +75,11 @@ class SideMenuLogo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: FlutterLogo(
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: Insets.medium),
+      alignment: Alignment.center,
+      //TODO include clima mais logo
+      child: const FlutterLogo(
         size: 150,
       ),
     );
@@ -92,61 +93,66 @@ class LocationManagementList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          alignment: Alignment.centerLeft,
-          child: Text(
-            'Your locations',
-            semanticsLabel:
-                'Locations list, the location on start will be displayed on the main page.',
-          ),
-        ), // Todo l10n
-        Container(
-          height: 56 * 5,
-          margin: const EdgeInsets.symmetric(vertical: Insets.small),
-          //Todo: a Merge is removing CustomSemanticsAction https://github.com/flutter/flutter/issues/71396
-          child: ReorderableListView.builder(
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: locations.length,
-            // prototypeItem: const ListTile(), // Prototype jumps down bug
-            onReorder: (oldIndex, newIndex) => context.read<WeatherBloc>().add(
-                WeatherLocationOrderChanged(
-                    oldIndex: oldIndex,
-                    newIndex: newIndex,
-                    locations: locations)),
-            itemBuilder: (context, index) => ListItemTest(
-              key: ObjectKey(locations[index]),
-              location: locations[index],
-              onDelete: () {
-                context
-                    .read<WeatherBloc>()
-                    .add(WeatherLocationDeleted(index: index));
-                Navigator.of(context).pop();
-              },
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: Insets.medium),
+      child: Column(
+        children: [
+          Container(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              AppLocalizations.of(context).locationsSaved,
+              semanticsLabel: AppLocalizations.of(context).locationsSaved,
             ),
           ),
-        ),
-        AddNewCityButton(
-          onPressed: () async {
-            final result = await Navigator.push<List<Location>>(
-              context,
-              MaterialPageRoute(
-                  builder: (context) =>
-                      LocationSearchPage(userLocations: locations)),
-            );
-
-            if (result == null) {
-              return;
-            } else {
-              Navigator.of(context).pop();
-              context
+          Container(
+            height: 56 * 5,
+            margin: const EdgeInsets.symmetric(vertical: Insets.small),
+            //TODO A11y a Merge is removing CustomSemanticsAction https://github.com/flutter/flutter/issues/71396
+            child: ReorderableListView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: locations.length,
+              // prototypeItem: const ListTile(), // Prototype jumps down bug
+              onReorder: (oldIndex, newIndex) => context
                   .read<WeatherBloc>()
-                  .add(WeatherFetchRequested(locations: result));
-            }
-          },
-        ),
-      ],
+                  .add(WeatherLocationOrderChanged(
+                      oldIndex: oldIndex,
+                      newIndex: newIndex,
+                      locations: locations)),
+              itemBuilder: (context, index) => SlidableListTile(
+                key: ObjectKey(locations[index]),
+                location: locations[index],
+                onDelete: () {
+                  context
+                      .read<WeatherBloc>()
+                      .add(WeatherLocationDeleted(index: index));
+                  Navigator.of(context).pop();
+                },
+              ),
+            ),
+          ),
+          AddNewCityButton(
+            onPressed: locations.length < 5
+                ? () async {
+                    final result = await Navigator.push<List<Location>>(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              LocationSearchPage(userLocations: locations)),
+                    );
+
+                    if (result == null) {
+                      return;
+                    } else {
+                      Navigator.of(context).pop();
+                      context
+                          .read<WeatherBloc>()
+                          .add(WeatherFetchRequested(locations: result));
+                    }
+                  }
+                : null,
+          ),
+        ],
+      ),
     );
   }
 }
@@ -166,7 +172,10 @@ class AddNewCityButton extends StatelessWidget {
         width: 100,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [const Icon(Icons.add), Text('Add new city')], //Todo l10n
+          children: [
+            const Icon(Icons.add),
+            Text(AppLocalizations.of(context).addNewCity),
+          ],
         ),
       ),
       onPressed: onPressed,
@@ -174,22 +183,9 @@ class AddNewCityButton extends StatelessWidget {
   }
 }
 
-class SideMenuFooter extends StatelessWidget {
-  const SideMenuFooter({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(Insets.medium),
-      child: Center(
-        child: Text('jcsj.dev'),
-      ),
-    );
-  }
-}
-
-class ListItemTest extends StatelessWidget {
-  const ListItemTest({required Key key, required this.location, this.onDelete})
+class SlidableListTile extends StatelessWidget {
+  const SlidableListTile(
+      {required Key key, required this.location, this.onDelete})
       : super(key: key);
 
   final Location location;
@@ -198,19 +194,19 @@ class ListItemTest extends StatelessWidget {
   Icon _getIconData(LocationType locationType) {
     switch (locationType) {
       case LocationType.physical:
-        return Icon(
+        return const Icon(
           Icons.location_on_outlined,
-          semanticLabel: 'GPS location', //Todo: l10n
+          semanticLabel: 'GPS location', //TODO A11y
         );
       case LocationType.saved:
-        return Icon(
+        return const Icon(
           Icons.bookmark_outlined,
-          semanticLabel: 'Saved location',
+          semanticLabel: 'Saved location', //TODO A11y
         );
       case LocationType.history:
-        return Icon(Icons.history_outlined);
+        return const Icon(Icons.history_outlined);
       case LocationType.fetched:
-        return Icon(Icons.location_city_outlined);
+        return const Icon(Icons.location_city_outlined);
     }
   }
 
@@ -239,18 +235,18 @@ class ListItemTest extends StatelessWidget {
                                   horizontal: Insets.small),
                               child: Text(deleteL10n),
                             )
-                          ], //todo l10n
+                          ],
                         ),
-                        content: Text(
-                            'Do you want to delete ${location.title}?'), //todo l10n,
+                        content: Text(AppLocalizations.of(context)
+                            .deletePrompt(location.title)),
                         actions: [
                           TextButton(
                             onPressed: () => Navigator.of(context).pop(),
-                            child: Text('No'), //todo l10n
+                            child: Text(AppLocalizations.of(context).no),
                           ),
                           TextButton(
                             onPressed: onDelete,
-                            child: Text('Yes'), //todo l10n
+                            child: Text(AppLocalizations.of(context).yes),
                           ),
                         ],
                       ));
@@ -258,16 +254,11 @@ class ListItemTest extends StatelessWidget {
           ),
         ],
       ),
-      child: Container(
-        // color: Theme.of(context).scaffoldBackgroundColor,
-        child: Material(
-          child: ListTile(
-            leading: _getIconData(location.locationType),
-            title: Text(location.title),
-            trailing: const Icon(
-              Icons.drag_indicator,
-            ),
-          ),
+      child: ListTile(
+        leading: _getIconData(location.locationType),
+        title: Text(location.title),
+        trailing: const Icon(
+          Icons.drag_indicator,
         ),
       ),
     );

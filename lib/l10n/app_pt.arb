@@ -38,12 +38,15 @@
       }
     }
   },
+  "addNewCity": "Adicionar nova localização",
   "airPressure": "Pressão Atmosférica",
   "appTitle": "Meta Tempo",
   "cloudy": "Nublado",
   "dataFrom": "Fonte",
+  "deletePrompt": "Deseja deletar {object}?",
   "fog": "Neblina",
   "forecastDate": "{date}",
+  "gpsIconsSemantic": "Localização GPS",
   "hail": "Granizo",
   "heavyRain": "Chuva pesada",
   "heavySnow": " Neve pesada",
@@ -55,10 +58,14 @@
   "lightSnow": "Neve leve",
   "locationSearch": "Pesquise aqui",
   "locationSearchGPS": "Use sua localização",
+  "locationsSaved": "Suas  localizações",
+  "locationsSavedSemantic": "Lista de localizações, a localização no inicio será mostrada na pagina principal",
   "mediumRain": "Chuva",
   "mediumSnow": "Neve",
+  "no": "Não",
   "partlyCloudy": "Muitas nuvens",
   "predictability": "Previsibilidade",
+  "savedLocationIconSemantic": "Localização salva",
   "selectCityFormCity": "Cidade",
   "selectCityNotSupported": "Cidade não suportada",
   "settingsTemp": "Temperatura",
@@ -84,5 +91,6 @@
   "weekTomorrow": "amanhã",
   "weekWeek": "Semana",
   "windDirection": "Direção do vento",
-  "windSpeed": "Vento"
+  "windSpeed": "Vento",
+  "yes": "Sim"
 }

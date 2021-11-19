@@ -20,7 +20,6 @@ void main() async {
     storageDirectory: await getTemporaryDirectory(),
   );
   // init deps
-  final settingsBloc = SettingsBloc();
   final httpClient = http.Client();
   final weatherRepository = MetaWeatherRepository(
     weatherApiClient: WeatherApiClient(
@@ -29,12 +28,16 @@ void main() async {
   );
 
   HydratedBlocOverrides.runZoned(
-    () => runApp(
-      ClimaMaisApp(
-        settingsBloc: settingsBloc,
-        weatherRepository: weatherRepository,
-      ),
-    ),
+    () {
+      final settingsBloc = SettingsBloc();
+      runApp(
+        ClimaMaisApp(
+          settingsBloc: settingsBloc,
+          weatherRepository: weatherRepository,
+        ),
+      );
+    },
     storage: storage,
+    blocObserver: ClimaMaisBlocObserver(),
   );
 }
