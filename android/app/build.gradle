@@ -49,6 +49,10 @@ android {
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
+    
+    defaultConfig {
+        manifestPlaceholders = [mapsApiKey: "$System.env.MAPS_API_KEY"]
+    }
 
     buildTypes {
         release {
