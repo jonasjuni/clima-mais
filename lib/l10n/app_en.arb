@@ -68,6 +68,7 @@
   "humidity": "Humidity",
   "lightRain": "Light rain",
   "lightSnow": "Light snow",
+  "localTimeTitle": "Local Time ",
   "locationSearch": "Search here",
   "locationSearchGPS": "Add current location",
   "locationsSaved": "Your locations",

@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:clima_mais/location_search/location_search.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:flutter/services.dart';
@@ -98,11 +99,42 @@ class ActionsMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final locations = context.select((WeatherBloc element) {
+      final state = element.state;
+      if (state is WeatherLoadSuccess) {
+        return state.locations;
+      }
+      return const <Location>[];
+    });
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         IconButton(
+          splashRadius: null,
           onPressed: () => Scaffold.of(context).openDrawer(),
-          icon: Icon(Icons.menu),
+          icon: const Icon(Icons.menu),
+          tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
+        ),
+        IconButton(
+          onPressed: locations.length < 5
+              ? () async {
+                  final result = await Navigator.push<List<Location>>(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            LocationSearchPage(userLocations: locations)),
+                  );
+
+                  if (result == null) {
+                    return;
+                  } else {
+                    context
+                        .read<WeatherBloc>()
+                        .add(WeatherFetchRequested(locations: result));
+                  }
+                }
+              : null,
+          icon: const Icon(Icons.add),
           tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
         ),
       ],

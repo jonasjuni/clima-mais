@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -12,6 +11,7 @@ import 'package:clima_mais/weather/weather.dart';
 import 'package:clima_mais/settings/settings.dart';
 import 'package:clima_mais/repositories/repositories.dart';
 import 'package:clima_mais/theme.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class WeatherCompleted extends StatelessWidget {
   const WeatherCompleted({Key? key, required this.weather}) : super(key: key);
@@ -37,8 +37,8 @@ class WeatherCompleted extends StatelessWidget {
                 WeatherCorver(
                   weather: weather,
                 ),
-                SizedBox(height: Insets.xlarge),
-                DailyForecastTitle(),
+                const SizedBox(height: Insets.xlarge),
+                const DailyForecastTitle(),
                 DailyForecastChart(weatherForecasts: weather.weatherForecasts),
                 DailyForecastList(weatherForecasts: weather.weatherForecasts),
               ],
@@ -48,7 +48,7 @@ class WeatherCompleted extends StatelessWidget {
             //Map must be keept alive
             child: Column(
               children: [
-                SizedBox(height: Insets.xlarge),
+                const SizedBox(height: Insets.xlarge),
                 Container(
                     alignment: Alignment.centerLeft,
                     padding: const EdgeInsets.symmetric(
@@ -59,7 +59,7 @@ class WeatherCompleted extends StatelessWidget {
                 LocationDetails(
                   weather: weather,
                 ),
-                Footer(),
+                Footer(woeid: weather.woeid),
               ],
             ),
           ),
@@ -254,12 +254,12 @@ class LocationDetails extends StatelessWidget {
                   child: Column(
                     children: [
                       Text(
-                        'Local Time', //TODO L10n
+                        AppLocalizations.of(context).localTimeTitle,
                         style: Theme.of(context).textTheme.headline6,
                       ),
                       ClockTimer(
                         location: location,
-                      ), //TODO local clock
+                      ),
                     ],
                   ),
                 ),
@@ -316,7 +316,7 @@ class _ClockTimerState extends State<ClockTimer>
     super.dispose();
   }
 
-  ///From Fluter clock challenger https://github.com/flutter/flutter_clock
+  ///From Fluter clock challenge https://github.com/flutter/flutter_clock
   void _updateTime() {
     setState(() {
       _dateTime = DateTime.now();
@@ -345,7 +345,13 @@ class _ClockTimerState extends State<ClockTimer>
 }
 
 class Footer extends StatelessWidget {
-  const Footer({Key? key}) : super(key: key);
+  const Footer({Key? key, required this.woeid}) : super(key: key);
+
+  final int woeid;
+
+  void _launchURL(int woeid) async {
+    await launch('https://www.metaweather.com/$woeid');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -354,10 +360,27 @@ class Footer extends StatelessWidget {
       padding: const EdgeInsets.symmetric(
           vertical: Insets.medium, horizontal: kLateralPadding),
       child: RichText(
-        text: TextSpan(children: [
-          TextSpan(text: AppLocalizations.of(context).dataFrom),
-          TextSpan(text: ' MetaWeather'), //TODO add link to metaweather
-        ], style: Theme.of(context).textTheme.bodyText2),
+        text: TextSpan(
+          style: Theme.of(context).textTheme.bodyText2,
+          children: [
+            TextSpan(text: AppLocalizations.of(context).dataFrom),
+            const TextSpan(text: ' '),
+            WidgetSpan(
+              child: Tooltip(
+                message: 'Link to MetaWeather', //TODO: A11y
+                child: InkWell(
+                  child: Text(
+                    'MetaWeather',
+                    style: TextStyle(
+                        decoration: TextDecoration.underline,
+                        color: Theme.of(context).indicatorColor),
+                  ),
+                  onTap: () => _launchURL(woeid),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
