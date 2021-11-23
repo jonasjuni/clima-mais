@@ -1,16 +1,26 @@
 # clima_mais
+![climaMais](https://user-images.githubusercontent.com/12734070/143134825-dc0e2347-1694-49dc-9220-25eda61c382d.png)
 
-A new Flutter project.
 
-## Getting Started
 
-This project is a starting point for a Flutter application.
+Flutter demo using bloc library, l10n, gmaps and more...
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+## Instructions
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### Deps
+run: `flutter pub get`
+
+### I10n
+run 
+`flutter gen-l10n`
+
+### google_maps_flutter
+Get an API key at https://cloud.google.com/maps-platform/
+
+Add your API key to User Environment variables:
+
+variable neme: MAPS_API_KEY\
+variable value: {your api key}
+
+![image](https://user-images.githubusercontent.com/12734070/143130556-07e4b367-17b7-4cd6-ab4d-61ee4569d0d4.png)
