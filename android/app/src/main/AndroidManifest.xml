@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.clima_mais">
    <application
-        android:label="clima_mais"
+        android:label="Clima Mais"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
@@ -18,6 +18,15 @@
               android:name="io.flutter.embedding.android.NormalTheme"
               android:resource="@style/NormalTheme"
               />
+            <!-- Displays an Android View that continues showing the launch screen
+                 Drawable until Flutter paints its first frame, then this splash
+                 screen fades out. A splash screen is useful to avoid any visual
+                 gap between the end of Android's launch screen and the painting of
+                 Flutter's first frame. -->
+            <meta-data
+              android:name="io.flutter.embedding.android.SplashScreenDrawable"
+              android:resource="@drawable/launch_background"
+              />
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -29,14 +38,14 @@
             android:name="flutterEmbedding"
             android:value="2" />
         <!-- Google Maps -->
-        <meta-data android:name="com.google.android.geo.API_KEY" android:value="${mapsApiKey}"/>
+        <meta-data android:name="com.google.android.geo.API_KEY" android:value="${mapsApiKey}" />
     </application>
-        <!-- Location Permission -->
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <uses-permission android:name="android.permission.VIBRATE"/>
-    <queries>
+    <!-- Location Permission -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.VIBRATE" />
     <!-- If your app opens https URLs -->
+    <queries>
         <intent>
             <action android:name="android.intent.action.VIEW" />
             <data android:scheme="https" />

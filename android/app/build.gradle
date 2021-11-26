@@ -51,6 +51,7 @@ android {
     }
     
     defaultConfig {
+        // Gmaps api key
         manifestPlaceholders = [mapsApiKey: "$System.env.MAPS_API_KEY"]
     }
 
