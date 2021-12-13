@@ -86,13 +86,13 @@ class _DailyForecastChartState extends State<DailyForecastChart> {
             margin: const EdgeInsets.only(top: Insets.small),
             padding: const EdgeInsets.symmetric(
                 horizontal: Insets.medium), //lable cliping
-            width: double.infinity,
             height: 200,
             child: LineChart(
               LineChartData(
                 // read about it in the LineChartData section
                 gridData: FlGridData(
                   show: true,
+                  verticalInterval: 1,
                   drawHorizontalLine: false,
                 ),
                 borderData: FlBorderData(show: false),
@@ -108,9 +108,15 @@ class _DailyForecastChartState extends State<DailyForecastChart> {
                         ?.copyWith(fontWeight: FontWeight.bold),
                     margin: Insets.medium,
 
-                    getTitles: (index) => AppLocalizations.of(context)
-                        .weekDayAbbr(weatherForecasts[index.toInt()]
-                            .date), //Todo: localize date
+                    getTitles: (value) {
+                      if (value % 1 == 0) {
+                        final int index = value.toInt();
+                        return AppLocalizations.of(context)
+                            .weekDayAbbr(weatherForecasts[index].date);
+                      } else {
+                        return '';
+                      }
+                    }, //Todo: localize date
                   ),
                 ),
                 lineTouchData: LineTouchData(
