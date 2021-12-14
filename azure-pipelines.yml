@@ -21,6 +21,18 @@ stages:
             mode: 'auto'
             channel: 'stable'
             version: 'latest'
+        - task: DownloadSecureFile@1
+          name: keystore
+          inputs:
+            secureFile: 'upload-keystore.jks'
+
+        - task: DownloadSecureFile@1
+          name: key
+          inputs:
+            secureFile: 'key.properties'
+            
+        - script: ln -s -t $(System.DefaultWorkingDirectory)/android/ $(key.secureFilePath)
+        
         - task: FlutterCommand@0
           inputs:
             projectDirectory: '.'
