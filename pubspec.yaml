@@ -78,7 +78,6 @@ flutter:
   assets:
     - assets/animations/weather/
     - assets/maps/
-    - assets/icons/
     - assets/images/background/
 
   # An image asset can refer to one or more resolution-specific "variants", see
