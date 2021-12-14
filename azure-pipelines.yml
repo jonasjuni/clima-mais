@@ -43,6 +43,7 @@ stages:
           inputs:
             target: 'aab'
             projectDirectory: '.'
+            verboseMode: true
 
         - publish: $(System.DefaultWorkingDirectory)/build/app/outputs/bundle/release/app-release.aab
           artifact: android
