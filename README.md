@@ -1,7 +1,7 @@
 # clima_mais
-![climaMais](https://user-images.githubusercontent.com/12734070/143134825-dc0e2347-1694-49dc-9220-25eda61c382d.png)
+[![Build Status](https://dev.azure.com/jcsj/clima_mais/_apis/build/status/jonasjuni.clima-mais?branchName=refs%2Fpull%2F5%2Fmerge)](https://dev.azure.com/jcsj/clima_mais/_build/latest?definitionId=8&branchName=refs%2Fpull%2F5%2Fmerge)
 
-
+![iPhone 12 Pro Max](https://user-images.githubusercontent.com/12734070/146019364-f3d5f135-f047-40b1-8321-14b574973ff5.png)
 
 Flutter demo using bloc library, l10n, gmaps and more...
 
