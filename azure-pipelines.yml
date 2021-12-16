@@ -43,7 +43,7 @@ stages:
           inputs:
             target: 'aab'
             projectDirectory: '.'
-            buildNumber: '$(Build.BuildId)'
+            buildNumber: '$(Build.BuildNumber)'
 
         - publish: $(System.DefaultWorkingDirectory)/build/app/outputs/bundle/release/app-release.aab
           artifact: android
