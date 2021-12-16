@@ -9,6 +9,7 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
+name: $(Rev:r)
 stages:
   - stage: Build
     displayName: Building
