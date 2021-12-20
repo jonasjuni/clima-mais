@@ -15,7 +15,7 @@ stages:
     displayName: Building
     jobs:
       - job: Android_Build
-        displayName: 🏗️ Building GooglePlay App Bundle N° $(Build.BuildNumber)
+        displayName: 🏗️ Building GooglePlay App Bundle N°'$(Build.BuildNumber)'
         steps:
         - task: DownloadSecureFile@1
           name: keystore
