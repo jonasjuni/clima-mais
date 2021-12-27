@@ -1,5 +1,5 @@
 # clima_mais
-[![Build Status](https://dev.azure.com/jcsj/clima_mais/_apis/build/status/Google%20Play%20Bundle%20Build?branchName=main)](https://dev.azure.com/jcsj/clima_mais/_build/latest?definitionId=12&branchName=main)
+[![Build Status](https://dev.azure.com/jcsj/clima_mais/_apis/build/status/Android%20Bundle%20Build?branchName=main&jobName=%F0%9F%8F%97%EF%B8%8F%20Building%20GooglePlay%20App%20Bundle)](https://dev.azure.com/jcsj/clima_mais/_build/latest?definitionId=15&branchName=main)
 
 ![iPhone 12 Pro Max](https://user-images.githubusercontent.com/12734070/146019364-f3d5f135-f047-40b1-8321-14b574973ff5.png)
 
