@@ -47,6 +47,8 @@ stages:
             projectDirectory: '.'
             arguments: '-v gen-l10n'
         - task: FlutterBuild@0
+          env:
+            MAPS_API_KEY: $(MAPS_API_KEY)
           displayName: 📝 building and signing app bundle
           inputs:
             target: 'aab'
