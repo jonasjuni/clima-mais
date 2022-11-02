@@ -82,71 +82,71 @@ class _DailyForecastChartState extends State<DailyForecastChart> {
       padding: const EdgeInsets.symmetric(horizontal: kLateralPadding),
       child: Column(
         children: [
-          Container(
-            margin: const EdgeInsets.only(top: Insets.small),
-            padding: const EdgeInsets.symmetric(
-                horizontal: Insets.medium), //lable cliping
-            height: 200,
-            child: LineChart(
-              LineChartData(
-                // read about it in the LineChartData section
-                gridData: FlGridData(
-                  show: true,
-                  verticalInterval: 1,
-                  drawHorizontalLine: false,
-                ),
-                borderData: FlBorderData(show: false),
-                titlesData: FlTitlesData(
-                  topTitles: SideTitles(showTitles: false),
-                  leftTitles: SideTitles(showTitles: false),
-                  rightTitles: SideTitles(showTitles: false),
-                  bottomTitles: SideTitles(
-                    showTitles: true,
-                    getTextStyles: (context, index) => Theme.of(context)
-                        .textTheme
-                        .bodyText1
-                        ?.copyWith(fontWeight: FontWeight.bold),
-                    margin: Insets.medium,
-
-                    getTitles: (value) {
-                      if (value % 1 == 0) {
-                        final int index = value.toInt();
-                        return AppLocalizations.of(context)
-                            .weekDayAbbr(weatherForecasts[index].date);
-                      } else {
-                        return '';
-                      }
-                    }, //Todo: localize date
-                  ),
-                ),
-                lineTouchData: LineTouchData(
-                  //Todo: a11y
-                  touchTooltipData: LineTouchTooltipData(
-                      tooltipBgColor: Theme.of(context).cardColor,
-                      getTooltipItems: (touchedSpots) {
-                        return touchedSpots.map((LineBarSpot touchedSpot) {
-                          return LineTooltipItem(
-                              '${touchedSpot.y.round()}${unitList[_selectedIndex]}',
-                              const TextStyle());
-                        }).toList();
-                      }),
-                ),
-                lineBarsData: [
-                  LineChartBarData(
-                    curveSmoothness: 0.2,
-                    spots: spotDataList[_selectedIndex],
-                    barWidth: 3.5,
-                    isCurved: true,
-                    isStepLineChart: _selectedIndex == 0,
-                    colors: barColorsList[_selectedIndex],
-                    dotData: FlDotData(show: false),
-                  ),
-                ],
-              ),
-              swapAnimationDuration: const Duration(milliseconds: 500),
-              swapAnimationCurve: Curves.linear,
-            ),
-          ),
+          // Container(
+          //   margin: const EdgeInsets.only(top: Insets.small),
+          //   padding: const EdgeInsets.symmetric(
+          //       horizontal: Insets.medium), //lable cliping
+          //   height: 200,
+          //   child: LineChart(
+          //     LineChartData(
+          //       // read about it in the LineChartData section
+          //       gridData: FlGridData(
+          //         show: true,
+          //         verticalInterval: 1,
+          //         drawHorizontalLine: false,
+          //       ),
+          //       borderData: FlBorderData(show: false),
+          //       titlesData: FlTitlesData(
+          //         topTitles: SideTitles(showTitles: false),
+          //         leftTitles: SideTitles(showTitles: false),
+          //         rightTitles: SideTitles(showTitles: false),
+          //         bottomTitles: SideTitles(
+          //           showTitles: true,
+          //           getTextStyles: (context, index) => Theme.of(context)
+          //               .textTheme
+          //               .bodyText1
+          //               ?.copyWith(fontWeight: FontWeight.bold),
+          //           margin: Insets.medium,
+          //
+          //           getTitles: (value) {
+          //             if (value % 1 == 0) {
+          //               final int index = value.toInt();
+          //               return AppLocalizations.of(context)
+          //                   .weekDayAbbr(weatherForecasts[index].date);
+          //             } else {
+          //               return '';
+          //             }
+          //           }, //Todo: localize date
+          //         ),
+          //       ),
+          //       lineTouchData: LineTouchData(
+          //         //Todo: a11y
+          //         touchTooltipData: LineTouchTooltipData(
+          //             tooltipBgColor: Theme.of(context).cardColor,
+          //             getTooltipItems: (touchedSpots) {
+          //               return touchedSpots.map((LineBarSpot touchedSpot) {
+          //                 return LineTooltipItem(
+          //                     '${touchedSpot.y.round()}${unitList[_selectedIndex]}',
+          //                     const TextStyle());
+          //               }).toList();
+          //             }),
+          //       ),
+          //       lineBarsData: [
+          //         LineChartBarData(
+          //           curveSmoothness: 0.2,
+          //           spots: spotDataList[_selectedIndex],
+          //           barWidth: 3.5,
+          //           isCurved: true,
+          //           isStepLineChart: _selectedIndex == 0,
+          //           colors: barColorsList[_selectedIndex],
+          //           dotData: FlDotData(show: false),
+          //         ),
+          //       ],
+          //     ),
+          //     swapAnimationDuration: const Duration(milliseconds: 500),
+          //     swapAnimationCurve: Curves.linear,
+          //   ),
+          // ),
           Container(
             padding: const EdgeInsets.symmetric(vertical: Insets.medium),
             child: Row(
